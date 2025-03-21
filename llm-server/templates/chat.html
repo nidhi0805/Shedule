@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Eva – Your Voice Planner</title>
+  <style>
+    body { font-family: sans-serif; max-width: 600px; margin: auto; padding: 20px; }
+    #chatBox { border: 1px solid #ccc; padding: 10px; min-height: 300px; margin-bottom: 10px; }
+    .user { color: blue; margin: 5px 0; }
+    .eva { color: green; margin: 5px 0; }
+  </style>
+</head>
+<body>
+  <h2>Meet Eva Your Wellness Planner</h2>
+  <p><strong>Name:</strong> <input type="text" id="nameInput" placeholder="Your name"></p>
+  <div id="chatBox"></div>
+  <input type="text" id="userInput" placeholder="Type or speak..." />
+  <button onclick="sendMessage()">Send</button>
+  <button onclick="startVoice()">🎤 Speak</button>
+
+  <script>
+    const chatBox = document.getElementById("chatBox");
+
+    function speak(text) {
+      const msg = new SpeechSynthesisUtterance(text);
+      msg.lang = "en-US";
+      msg.voice = speechSynthesis.getVoices().find(v => v.name.includes("Google") || v.name.includes("Alexa")) || null;
+      speechSynthesis.speak(msg);
+    }
+
+    async function sendMessage() {
+      const input = document.getElementById("userInput").value;
+      const name = document.getElementById("nameInput").value || "there";
+      chatBox.innerHTML += `<div class="user">You: ${input}</div>`;
+
+      const res = await fetch("/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: input, name: name })
+      });
+
+      const data = await res.json();
+      chatBox.innerHTML += `<div class="eva">Eva: ${data.reply}</div>`;
+      speak(data.reply);
+      document.getElementById("userInput").value = "";
+    }
+
+    function startVoice() {
+      const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+      recognition.lang = "en-US";
+      recognition.start();
+
+      recognition.onresult = function(event) {
+        const transcript = event.results[0][0].transcript;
+        document.getElementById("userInput").value = transcript;
+        sendMessage();
+      };
+    }
+
+    // Optional: Auto-greet on load
+    window.onload = () => {
+      const greeting = "Hi, I’m Eva, your personal planning assistant. Would you like me to tailor your schedule based on your menstrual cycle?";
+      chatBox.innerHTML += `<div class="eva">Eva: ${greeting}</div>`;
+      speak(greeting);
+    };
+  </script>
+</body>
+</html>

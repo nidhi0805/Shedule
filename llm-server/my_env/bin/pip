@@ -1,4 +1,4 @@
-#!/Users/nidhipatel/Desktop/Shedule/llm-server/py_env/bin/python
+#!/Users/nidhipatel/Desktop/Shedule/llm-server/my_env/bin/python
 # -*- coding: utf-8 -*-
 import re
 import sys
