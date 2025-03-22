@@ -51,12 +51,10 @@ const Day = ({ day, month, year, onBack }) => {
 
   return (
     <div className="schedule">
-      <Button variant="contained" color="primary" onClick={onBack} sx={{ marginBottom: 2 }}>
-        Back to Calendar
-      </Button>
+   
 
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
-        <h2 style={{ margin: 0 }}>Schedule for {selectedDate.toDateString()}</h2>
+        <h2 style={{ marginBottom: 20 }}>Schedule for {selectedDate.toDateString()}</h2>
         <Button variant="outlined" color="success" onClick={handleDoneClick} disabled={Object.keys(tasks).length === 0}>
           Done
         </Button>
