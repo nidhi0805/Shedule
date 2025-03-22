@@ -18,7 +18,7 @@ const Signup = () => {
     });
     setErrors({
       ...errors,
-      [e.target.name]: '' // Clear error on input change
+      [e.target.name]: ''
     });
   };
 
@@ -48,7 +48,7 @@ const Signup = () => {
             boxShadow: 8,
             borderRadius: 5,
             width: '100%',
-            background: 'linear-gradient(135deg,rgb(210, 191, 209),rgb(233, 227, 233))',
+            background: 'linear-gradient(135deg,rgb(241, 230, 240),rgb(233, 227, 233))',
             color: '#fff',
           }}
         >
