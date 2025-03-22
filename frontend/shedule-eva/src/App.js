@@ -3,6 +3,7 @@ import "react-calendar/dist/Calendar.css";
 import "./App.css";
 import React, { useState, useEffect } from "react";
 import Chatbot from './pages/chatbot';
+import Signup from "./signup";
 
 
 
@@ -121,6 +122,7 @@ const App = () => {
 
       {/* Eva assistant component */}
 <Chatbot />
+<Signup/>
     </div>
   );
 };
