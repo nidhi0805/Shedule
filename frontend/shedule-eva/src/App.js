@@ -8,6 +8,7 @@ import Signup from "./pages/newsignup";
 import Categories from "./pages/categories";
 import Day from "./pages/calendar/day";
 import Summary from "./pages/summary";
+import Navbar from "./pages/navbar";
 
 const timeSlots = Array.from({ length: 16 }, (_, i) => `${i + 7}:00`);
 
@@ -80,6 +81,7 @@ const App = () => {
   
   return (
     <div className="app">
+      <Navbar />
       <Chatbot />
       <Routes>
       <Route path="/" element={<Signup />} /> 
