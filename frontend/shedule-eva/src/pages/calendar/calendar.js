@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './calendar.css';
-import Day from './day';
 
 const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 const months = [
@@ -10,28 +10,24 @@ const months = [
 
 const CustomCalendar = () => {
   const [currentDate, setCurrentDate] = useState(new Date());
-  const [selectedDay, setSelectedDay] = useState(null);
+  const navigate = useNavigate();
 
   const today = new Date();
-  today.setHours(0, 0, 0, 0); 
+  today.setHours(0, 0, 0, 0);
 
   const generateCalendar = () => {
     const month = currentDate.getMonth();
     const year = currentDate.getFullYear();
-
     const firstDay = new Date(year, month, 1);
     const lastDay = new Date(year, month + 1, 0);
     const daysInMonth = lastDay.getDate();
     const startDay = firstDay.getDay();
-
     const days = [];
-
 
     for (let i = 0; i < startDay; i++) {
       days.push(null);
     }
 
- 
     for (let day = 1; day <= daysInMonth; day++) {
       days.push(day);
     }
@@ -47,34 +43,25 @@ const CustomCalendar = () => {
     setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1));
   };
 
-  const days = generateCalendar();
-
-
   const isPastDay = (day) => {
-    if (!day) return false; 
+    if (!day) return false;
     const dayDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), day);
     return dayDate < today;
   };
 
   const handleDayClick = (day) => {
-    if (isPastDay(day)) return; 
-    setSelectedDay(day);
+    if (isPastDay(day)) return;
+
+    navigate('/Schedule', {
+      state: {
+        day,
+        month: currentDate.getMonth() + 1, 
+        year: currentDate.getFullYear(),
+      },
+    });
   };
 
-  const handleBackToCalendar = () => {
-    setSelectedDay(null);
-  };
-
-  if (selectedDay !== null) {
-    return (
-      <Day
-        day={selectedDay}
-        month={months[currentDate.getMonth()]}
-        year={currentDate.getFullYear()}
-        onBack={handleBackToCalendar}
-      />
-    );
-  }
+  const days = generateCalendar();
 
   return (
     <div id="calendar">

@@ -8,9 +8,9 @@ const Chatbot = () => {
   const [awaitingDate, setAwaitingDate] = useState(false);
   const [voicesLoaded, setVoicesLoaded] = useState(false);
   const [userHasInteracted, setUserHasInteracted] = useState(false);
-  const [showBack, setShowBack] = useState(false); // NEW
+  const [showBack, setShowBack] = useState(false);
 
-  // Load voices
+  
   useEffect(() => {
     const handleVoices = () => setVoicesLoaded(true);
     if (speechSynthesis.getVoices().length > 0) {
