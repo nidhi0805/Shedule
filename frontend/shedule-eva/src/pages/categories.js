@@ -2,7 +2,12 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom"; 
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css"; 
+import wellnessLogo from '../images/wellness.png';  
+import physicalLogo from '../images/physical.png';  
+import selfcare from '../images/selfcare.png'; 
+import growth from '../images/growth.png'; 
 import './categories.css';
+
 const categories = [
   {
     title: "Self Care",
@@ -51,7 +56,18 @@ export default function Categories() {
       <p className="categories-subheader">Select up to 4 from the below options</p>
       <div className="categories-grid">
         {categories.map((category) => (
-          <div key={category.title} className="category-card">
+          <div
+            key={category.title}
+            className="category-card"
+            style={
+              category.title === "Mental Wellness"
+                ? { backgroundImage: `url(${wellnessLogo})` }
+                : category.title === "Physical Health"
+                ? { backgroundImage: `url(${physicalLogo})` }
+                : category.title === "Self Care" ? { backgroundImage: `url(${selfcare})` }
+                : category.title === "Productivity & Growth" ? { backgroundImage: `url(${growth})` } :{}
+            }
+          >
             <h2 className="category-title">{category.title}</h2>
             <div className="option-container">
               {category.options.map((option) => (
@@ -68,10 +84,7 @@ export default function Categories() {
           </div>
         ))}
       </div>
-      <button
-        onClick={handleSubmit}
-        className="submit-button"
-      >
+      <button onClick={handleSubmit} className="submit-button">
         Submit
       </button>
       <ToastContainer />

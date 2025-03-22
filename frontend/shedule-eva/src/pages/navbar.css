@@ -1,0 +1,19 @@
+
+
+.navbar .logo img {
+    height: 30px;
+    width: auto;
+  }
+  
+  .nav-item {
+    font-weight: bold;
+    font-size: 18px;
+    padding: 5px 10px;
+    border-radius: 5px;
+    transition: background 0.3s;
+  }
+  
+  .nav-item:hover {
+    background: rgba(0, 0, 0, 0.1);
+  }
+  

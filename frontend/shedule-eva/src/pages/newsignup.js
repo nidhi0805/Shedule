@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
-import { TextField, Button, Card, CardContent, Typography, Box, Container, Alert } from '@mui/material';
-
+import { TextField, Button, Card, CardContent, CardMedia, Box, Container, Alert } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-
+import './newsignup.css'; 
+import scheduleLogo from "../images/logo_shedule.png";
 const Signup = () => {
   const navigate = useNavigate();
-
 
   const [formData, setFormData] = useState({
     name: '',
@@ -38,39 +37,21 @@ const Signup = () => {
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
     } else {
-
       navigate('/Calendar');
-
     }
   };
 
   return (
     <Container maxWidth="sm">
-      <Box sx={{ display: 'flex', justifyContent: 'center', padding: '20px' }}>
-        <Card
-          sx={{
-            padding: 3,
-            boxShadow: 8,
-            borderRadius: 5,
-            width: '100%',
-            background: 'linear-gradient(135deg,rgb(241, 230, 240),rgb(233, 227, 233))',
-            color: '#fff',
-          }}
-        >
-          <CardContent>
-            <Typography
-              variant="h4"
-              gutterBottom
-              textAlign="center"
-              sx={{
-                fontWeight: 'bold',
-                letterSpacing: '2px',
-                textShadow: '2px 2px 5px rgba(0, 0, 0, 0.3)',
-                marginBottom: 3,
-              }}
-            >
-              Sign Up
-            </Typography>
+      <Box className="card-container">
+        <Card className="card">
+          <CardContent className='card-content'>
+          <CardMedia className='card-media'
+        component="img"
+        height="194"
+        image={scheduleLogo}
+        alt="Logo"
+      />
             <Box marginBottom={2}>
               <TextField
                 label="Name"
@@ -82,9 +63,7 @@ const Signup = () => {
                 onChange={handleInputChange}
                 error={!!errors.name}
                 helperText={errors.name}
-                InputProps={{
-                  style: { backgroundColor: '#fff', borderRadius: '5px' },
-                }}
+                className="text-field"
               />
               <TextField
                 label="Email"
@@ -97,9 +76,7 @@ const Signup = () => {
                 onChange={handleInputChange}
                 error={!!errors.email}
                 helperText={errors.email}
-                InputProps={{
-                  style: { backgroundColor: '#fff', borderRadius: '5px' },
-                }}
+                className="text-field"
               />
               <TextField
                 label="Date of Birth"
@@ -111,35 +88,24 @@ const Signup = () => {
                 value={formData.dateOfBirth}
                 onChange={handleInputChange}
                 InputLabelProps={{
-                  shrink: true, // Ensures the label is always above the input
+                  shrink: true,
                 }}
                 error={!!errors.dateOfBirth}
                 helperText={errors.dateOfBirth}
-                InputProps={{
-                  style: { backgroundColor: '#fff', borderRadius: '5px', height: '56px' },
-                }}
+                className="text-field-height"
               />
             </Box>
             {Object.keys(errors).length > 0 && (
-              <Alert severity="error" sx={{ marginBottom: 2, backgroundColor: '#f8d7da', color: '#721c24' }}>
+              <Alert className="error-alert" severity="error">
                 Please fix the errors above to proceed.
               </Alert>
             )}
-            <Box textAlign="center" marginTop={2}>
+            <Box className="button-container">
               <Button
                 variant="contained"
                 color="secondary"
                 onClick={handleNext}
-                sx={{
-                  paddingX: 4,
-                  paddingY: 1.5,
-                  fontSize: '16px',
-                  fontWeight: 'bold',
-                  backgroundColor: '#fbaed2',
-                  '&:hover': {
-                    backgroundColor: '#f48fb1',
-                  },
-                }}
+                className="button"
               >
                 Next
               </Button>
