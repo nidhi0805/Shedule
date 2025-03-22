@@ -37,47 +37,6 @@ const App = () => {
     if (taskCount >= 4) return "You've scheduled a lot today! Want to add a break?";
   };
 
-  useEffect(() => {
-    const greeting = "Hi! I'm Eva, your personal planning assistant. Let me know if you'd like help scheduling your day.";
-  
-    const speak = () => {
-      const utterance = new SpeechSynthesisUtterance(greeting);
-      utterance.lang = "en-US";
-  
-      const voices = speechSynthesis.getVoices();
-      const selectedVoice = voices.find(
-        voice =>
-          voice.name.toLowerCase().includes("female") ||
-          voice.name.toLowerCase().includes("google") ||
-          voice.lang === "en-US"
-      );
-  
-      if (selectedVoice) {
-        utterance.voice = selectedVoice;
-      }
-  
-      speechSynthesis.cancel();
-      speechSynthesis.speak(utterance);
-    };
-  
-    const handleUserInteraction = () => {
-      if (speechSynthesis.getVoices().length === 0) {
-        speechSynthesis.onvoiceschanged = speak;
-      } else {
-        speak();
-      }
-  
-      
-      window.removeEventListener("click", handleUserInteraction);
-    };
-  
-    
-    window.addEventListener("click", handleUserInteraction);
-  
-    return () => {
-      window.removeEventListener("click", handleUserInteraction);
-    };
-  }, []);
   
   return (
     <div className="app">

@@ -1,17 +1,19 @@
-from flask import Flask, request, jsonify,render_template
+from flask import Flask, request, jsonify
+from flask_cors import CORS
+from datetime import datetime,timedelta
+from dateutil import parser
 import requests
-from datetime import datetime
+import json
 
 app = Flask(__name__)
+CORS(app)
+
 OLLAMA_API = "http://localhost:11434/api/generate"
 MODEL = "mistral"
 
-# Global session memory (can be improved using Flask session or DB)
 user_context = {
     "cycle_opted_in": False,
-    "last_period_date": None,
-    "pregnancy_mode": False,
-    "pregnancy_start_date": None
+    "last_period_date": None
 }
 
 def query_ollama(prompt):
@@ -23,57 +25,136 @@ def query_ollama(prompt):
     response = requests.post(OLLAMA_API, json=payload)
     return response.json().get("response", "Sorry, something went wrong.")
 
+def construct_phase_and_activities(days_since_last_period):
+    print(f"Days since last period: {days_since_last_period}")  # Debugging line
+
+    if days_since_last_period <= 5:
+        phase = "Menstrual Phase"
+    elif 6 <= days_since_last_period <= 14:
+        phase = "Follicular Phase"
+    elif 15 <= days_since_last_period <= 17:
+        phase = "Ovulatory Phase"
+    elif 18 <= days_since_last_period <= 28:
+        phase = "Luteal Phase"
+    else:
+        print("Phase determination failed.")  # Debugging line
+        return None, None
+
+    prompt = (
+        f"You are Eva, a planner assistant.\n"
+        f"Cycle phase: {phase}.\n"
+        f"For each of the 4 categories: Self-Care, Physical Health, Mental Wellness, and Productivity & Growth,\n"
+        f"replace **all** activities with new ones that are best suited for this phase.\n"
+        f"Keep activities realistic, gentle, and 1-hour long.\n"
+        f"Return a JSON object with the following format:\n"
+        f"{{\n"
+        f"  \"Self-Care\": [\n"
+        f"    {{\"activity\": \"<new activity>\", \"duration\": \"1 hour\"}},\n"
+        f"    {{\"activity\": \"<new activity>\", \"duration\": \"1 hour\"}},\n"
+        f"    {{\"activity\": \"<new activity>\", \"duration\": \"1 hour\"}},\n"
+        f"    {{\"activity\": \"<new activity>\", \"duration\": \"1 hour\"}}\n"
+        f"  ],\n"
+        f"  \"Physical Health\": [\n"
+        f"    {{\"activity\": \"<new activity>\", \"duration\": \"1 hour\"}},\n"
+        f"    {{\"activity\": \"<new activity>\", \"duration\": \"1 hour\"}},\n"
+        f"    {{\"activity\": \"<new activity>\", \"duration\": \"1 hour\"}},\n"
+        f"    {{\"activity\": \"<new activity>\", \"duration\": \"1 hour\"}}\n"
+        f"  ],\n"
+        f"  \"Mental Wellness\": [\n"
+        f"    {{\"activity\": \"<new activity>\", \"duration\": \"1 hour\"}},\n"
+        f"    {{\"activity\": \"<new activity>\", \"duration\": \"1 hour\"}},\n"
+        f"    {{\"activity\": \"<new activity>\", \"duration\": \"1 hour\"}},\n"
+        f"    {{\"activity\": \"<new activity>\", \"duration\": \"1 hour\"}}\n"
+        f"  ],\n"
+        f"  \"Productivity & Growth\": [\n"
+        f"    {{\"activity\": \"<new activity>\", \"duration\": \"1 hour\"}},\n"
+        f"    {{\"activity\": \"<new activity>\", \"duration\": \"1 hour\"}},\n"
+        f"    {{\"activity\": \"<new activity>\", \"duration\": \"1 hour\"}},\n"
+        f"    {{\"activity\": \"<new activity>\", \"duration\": \"1 hour\"}}\n"
+        f"  ]\n"
+        f"}}\n"
+        f"Ensure that this is valid JSON without any extra characters or incomplete strings. Provide specific activities based on the phase you are in."
+    )
+
+    return phase, prompt
+
+def send_data_to_api(data):
+    # Hardcode the email
+    email = "jane.doe@shedule.com"
+    
+    # Build the target URL with the hardcoded email
+    target_url = f"http://localhost:5002/get-all-activities/{email}"
+    
+    headers = {
+        'Content-Type': 'application/json',
+    }
+    
+    # Send the POST request to the target API with the data
+    response = requests.post(target_url, json=data, headers=headers)
+    
+    # Check the response from the API
+    if response.status_code == 200:
+        print("Data successfully sent to target API!")
+        print("Response from API:", response.json())  # Log the response from the target API
+    else:
+        print(f"Failed to send data. Status code: {response.status_code}, Response: {response.text}")
+
 @app.route('/chat', methods=['POST'])
 def chat():
     data = request.json
-    user_input = data.get("message", "")
-    name = data.get("name", "there")
+    intent = data.get("intent", "")
+    last_period_date = data.get("lastPeriodDate", "")
 
-    # Step 1: Menstrual cycle opt-in
-    if "yes" in user_input.lower() and "cycle" in user_input.lower():
+    if intent == "greet":
+        return jsonify({
+            "reply": "Hi! I'm Eva. Would you like us to tailor your suggestions based on your cycle?"
+        })
+    
+    if intent == "cycle_opt_in_yes":
         user_context["cycle_opted_in"] = True
-        return jsonify({"reply": "Great! Please tell me the date your last period started. (e.g., March 1)"})
+        return jsonify({"reply": "When did your last period start?"})
 
-    # Step 2: Get last period date
-    if user_context["cycle_opted_in"] and user_context["last_period_date"] is None:
+    if intent == "submit_period_date" and last_period_date:
         try:
-            last_date = datetime.strptime(user_input, "%B %d")  # e.g., March 1
-            today = datetime.today()
-            last_date = last_date.replace(year=today.year)
+            last_date = parser.parse(last_period_date).date()
+            days_ago = (datetime.today().date() - last_date).days
+            print(f"Last period date: {last_date}, Days ago: {days_ago}")  # Debugging line
             user_context["last_period_date"] = last_date
-            delta_days = (today - last_date).days
 
-            if delta_days > 28:
-                user_context["pregnancy_mode"] = True
-                return jsonify({"reply": "It's been more than 28 days. Would you like pregnancy support enabled? If yes, please tell me when your pregnancy began."})
+            next_period_date = last_date + timedelta(days=28)
+            print(f"Next period date: {next_period_date}") 
+
+            # Ensure correct phase determination
+            phase, prompt = construct_phase_and_activities(days_ago)
+            print(f"Phase: {phase}")  # Debugging line to verify phase determination
+
+            if phase:
+                llm_response = query_ollama(prompt)
+                print("LLM Response:", llm_response)  # Log the LLM response to ensure it's as expected
+
+                llm_response["email"] = "jane.doe@gmail.com"
+                llm_response["nextPeriodDate"] = next_period_date.strftime("%Y-%m-%d")
+
+                # Send the LLM response to another API
+                send_data_to_api(llm_response)
+
+                return jsonify({
+                    "reply": f"You are currently in your {phase}. Here’s something tailored for you 🌼",
+                    "suggestedActivities": llm_response,
+                    "email": "jane.doe@gmail.com",  # Add the email
+                    "nextPeriodDate": next_period_date.strftime("%Y-%m-%d")
+                })
             else:
-                return jsonify({"reply": "Thanks! Your cycle will now be considered for personalized suggestions."})
-        except:
-            return jsonify({"reply": "Sorry, I couldn't understand the date. Please say it like 'March 1'."})
+                return jsonify({
+                    "reply": "We couldn’t determine the cycle phase. Please re-enter the date or explore options.",
+                    "options": ["Enter date again", "More options"]
+                })
 
-    # Step 3: Pregnancy support
-    if user_context["pregnancy_mode"] and user_context["pregnancy_start_date"] is None:
-        try:
-            start_date = datetime.strptime(user_input, "%B %d")
-            start_date = start_date.replace(year=datetime.today().year)
-            user_context["pregnancy_start_date"] = start_date
-            return jsonify({"reply": "Got it! I'll now tailor your schedule for pregnancy wellness and energy levels."})
-        except:
-            return jsonify({"reply": "Sorry, please give the pregnancy start date like 'February 10'."})
+        except Exception as e:
+            print("Date parsing error:", e)
+            return jsonify({"reply": "Sorry, I couldn't understand that. Please enter the date in YYYY-MM-DD format."})
 
-    # Default chat response using Ollama
-    system_prompt = f"""
-You are Eva, a warm, Alexa-like voice assistant for Shedule. You greet the user by name, ask about their day, and provide balanced task planning based on their health and energy.
-Support users through pregnancy and menstrual cycle if context is provided.
-"""
+    return jsonify({"reply": "I'm not sure I understood that. Let's start again!"})
 
-    full_prompt = f"{system_prompt}\nUser ({name}): {user_input}\nEva:"
-    response = query_ollama(full_prompt)
-    return jsonify({"reply": response})
-
-@app.route('/')
-def index():
-    return render_template("chat.html")
-
-if __name__ == '__main__':
-    app.run(host="0.0.0.0", port=5001, debug=True)
+if __name__ == "__main__":
+    app.run(port=5001)
