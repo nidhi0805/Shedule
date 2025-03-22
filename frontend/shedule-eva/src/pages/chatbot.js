@@ -35,20 +35,42 @@ const Chatbot = () => {
     }
   }, [expanded]);
 
-  const handleSend = () => {
+  const handleSend = async () => {
     if (userInput.trim() === "") return;
+  
+    setMessages((prev) => [...prev, { sender: "user", text: userInput }]);
+  
+    try {
+      const response = await fetch("http://localhost:5001/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          message: userInput,
+          name: "EvaUser" // optional, for personalization
+        })
+      });
+  
+    const data = await response.json();
 
-    const newMessage = { sender: "user", text: userInput };
-    setMessages((prev) => [...prev, newMessage]);
+    setMessages((prev) => [
+      ...prev,
+      { sender: "eva", text: data.reply },
+    ]);
 
-    setTimeout(() => {
-      const evaReply = {
-        sender: "eva",
-        text: "Thanks for your message! I'll help you shortly.",
-      };
-      setMessages((prev) => [...prev, evaReply]);
-    }, 1000);
+    const utterance = new SpeechSynthesisUtterance(data.reply);
+    utterance.lang = "en-US";
+    speechSynthesis.cancel();
+    speechSynthesis.speak(utterance);
 
+  } catch (error) {
+    console.error("Eva API error:", error);
+    setMessages((prev) => [
+      ...prev,
+      { sender: "eva", text: "Sorry, I couldn't connect right now." },
+    ]);
+
+    }
+  
     setUserInput("");
   };
 
