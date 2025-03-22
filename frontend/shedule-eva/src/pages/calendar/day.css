@@ -69,7 +69,7 @@
   .popup select {
     width: 100%;
     padding: 8px;
-    margin-bottom: 10px;
+    padding-bottom: 15px;
     border: 1px solid #ccc;
     border-radius: 5px;
   }
@@ -101,4 +101,7 @@
       gap: 20px;
     }
   }
-  
+.task.work { background: #8e44ad; }
+.task.chore { background: #3498db; }
+.task.self-care { background: #e67e22; }
+.task.workout { background: #27ae60; }

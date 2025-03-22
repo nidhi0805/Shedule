@@ -12,10 +12,8 @@ const CustomCalendar = () => {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedDay, setSelectedDay] = useState(null);
 
-
   const today = new Date();
   today.setHours(0, 0, 0, 0); 
-
 
   const generateCalendar = () => {
     const month = currentDate.getMonth();
@@ -33,7 +31,7 @@ const CustomCalendar = () => {
       days.push(null);
     }
 
-
+ 
     for (let day = 1; day <= daysInMonth; day++) {
       days.push(day);
     }
@@ -41,11 +39,9 @@ const CustomCalendar = () => {
     return days;
   };
 
-
   const goToPreviousMonth = () => {
     setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1));
   };
-
 
   const goToNextMonth = () => {
     setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1));
@@ -61,6 +57,7 @@ const CustomCalendar = () => {
   };
 
   const handleDayClick = (day) => {
+    if (isPastDay(day)) return; 
     setSelectedDay(day);
   };
 
@@ -96,7 +93,8 @@ const CustomCalendar = () => {
           <div
             key={index}
             className={`calendar-day ${!day ? 'empty' : ''} ${isPastDay(day) ? 'past-day' : ''}`}
-            onClick={() => day && handleDayClick(day)}
+            onClick={() => handleDayClick(day)}
+            style={isPastDay(day) ? { pointerEvents: 'none', color: 'gray' } : {}}
           >
             {day}
           </div>

@@ -1,13 +1,11 @@
-import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 import "./App.css";
 import React, { useState, useEffect } from "react";
+import { Routes, Route } from "react-router-dom";  
 import Chatbot from './pages/chatbot';
-
-import Signup from "./newsignup";
-import Categories from './categories'; 
 import CustomCalendar from "./pages/calendar/calendar";
-
+import Signup from "./pages/newsignup";
+import Categories from "./pages/categories";
 
 const timeSlots = Array.from({ length: 16 }, (_, i) => `${i + 7}:00`);
 
@@ -29,7 +27,6 @@ const App = () => {
     setShowForm({ time: null, open: false });
     setNewTask({ name: "", type: "Work" });
   };
-
 
   const evaSuggests = () => {
     const todayTasks = tasks[selectedDate.toDateString()] || {};
@@ -67,11 +64,11 @@ const App = () => {
         speak();
       }
   
-      // Remove listener so it only speaks once
+      
       window.removeEventListener("click", handleUserInteraction);
     };
   
-    // Wait for any user interaction before speaking
+    
     window.addEventListener("click", handleUserInteraction);
   
     return () => {
@@ -81,12 +78,14 @@ const App = () => {
   
   return (
     <div className="app">
-<Chatbot />
-{/* <Signup/>  */}
-<CustomCalendar/>
-
+      <Chatbot />
+      <Routes>
+      <Route path="/" element={<Signup />} /> 
+        <Route path="/Calendar" element={<CustomCalendar />} /> 
+        <Route path="/Categories" element={<Categories />} /> 
+      </Routes>
     </div>
-  )};
-
+  );
+};
 
 export default App;
