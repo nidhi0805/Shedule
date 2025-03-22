@@ -1,114 +1,58 @@
 import { useState } from "react";
-import scheduleLogo from "../images/logo_shedule.svg";
+import { AppBar, Toolbar, IconButton, Menu, MenuItem, Button, Box } from "@mui/material";
+import { AccountCircle } from "@mui/icons-material";
+import scheduleLogo from "../images/logo_shedule.png";
+import './navbar.css';  
 
 export default function Navbar() {
-  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [dropdownOpen, setDropdownOpen] = useState(null);
+
+  const handleMenuOpen = (event) => {
+    setDropdownOpen(event.currentTarget);
+  };
+
+  const handleMenuClose = () => {
+    setDropdownOpen(null);
+  };
 
   return (
-    <div>
-      <style>
-        {`
-          .navbar {
-            display: flex;
-            align-items: center;
-            background-color: #D8BFD8; /* Lighter background */
-            padding: 5px 5px;
-            width: 100%;
-            position: fixed;
-            top: 0;
-            left: 0;
-            height: 45px; /* Reduced height */
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-            z-index: 1000;
-          }
-          body {
-            padding-top: 50px; /* Prevents navbar from overlapping content */
-          }
-          .logo {
-            display: flex;
-            align-items: center;
-          }
-          .logo img {
-            height: 30px; /* Adjusted logo size */
-            width: auto;
-          }
-          .nav-links {
-            display: flex;
-            gap: 30px;
-            margin-left: 20px; /* Moves Home & Calendar closer to the logo */
-          }
-          .nav-item {
-            text-decoration: none;
-            color: black;
-            font-weight: bold;
-            font-size: 18px; /* Increased font size */
-            padding: 5px 10px;
-            border-radius: 5px;
-            transition: background 0.3s;
-          }
-          .nav-item:hover {
-            background: rgba(0, 0, 0, 0.1);
-          }
-          .active {
-            background: rgba(0, 0, 0, 0.2);
-          }
-          .user-menu {
-            position: absolute;
-            right: 20px; /* Keeps user icon inside the screen */
-            display: flex;
-            align-items: center;
-            cursor: pointer;
-          }
-          .user-icon {
-            height: 30px;
-            width: 30px;
-            border-radius: 50%;
-            object-fit: cover;
-            margin-left: 10px;
-          }
-          .dropdown {
-            position: absolute;
-            top: 40px;
-            right: 0;
-            background: white;
-            color: black;
-            border-radius: 5px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            display: ${dropdownOpen ? "block" : "none"};
-            min-width: 120px;
-          }
-          .dropdown-item {
-            padding: 8px 15px;
-            cursor: pointer;
-            white-space: nowrap;
-          }
-          .dropdown-item:hover {
-            background: #eee;
-          }
-        `}
-      </style>
+    <Box sx={{ flexGrow: 1 }}>
+      <AppBar position="fixed" sx={{ backgroundColor: "#D8BFD8", boxShadow: "0 2px 5px rgba(0, 0, 0, 0.1)" }}>
+        <Toolbar sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        
+          <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+            {/* <img src={scheduleLogo} alt="Logo" style={{ height: "30px", width: "auto" }} /> */}
+            <Button color="inherit" href="/" sx={{ fontWeight: "bold" }}>Home</Button>
+            <Button color="inherit" href="/Calendar" sx={{ fontWeight: "bold" }}>Calendar</Button>
+          </Box>
 
-      <nav className="navbar">
-        <div className="logo">
-          <img src={scheduleLogo} alt="Logo" />
-        </div>
+        
+          <IconButton
+            edge="end"
+            color="inherit"
+            aria-label="user menu"
+            onClick={handleMenuOpen}
+            sx={{ marginLeft: 2 }}
+          >
+            <AccountCircle />
+          </IconButton>
 
-        <div className="nav-links">
-          <a href="#" className="nav-item active">Home</a>
-          <a href="#" className="nav-item">Calendar</a>
-        </div>
+      
+          <Menu
+            anchorEl={dropdownOpen}
+            open={Boolean(dropdownOpen)}
+            onClose={handleMenuClose}
+            sx={{ marginTop: 2 }}
+          >
+            <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
+            <MenuItem onClick={handleMenuClose}>Settings</MenuItem>
+            <MenuItem onClick={handleMenuClose}>Logout</MenuItem>
+          </Menu>
+        </Toolbar>
+      </AppBar>
 
-        <div className="user-menu" onClick={() => setDropdownOpen(!dropdownOpen)}>
-          <img src="https://cdn-icons-png.flaticon.com/512/921/921124.png" alt="User" className="user-icon" />
-          {dropdownOpen && (
-            <div className="dropdown">
-              <div className="dropdown-item">Profile</div>
-              <div className="dropdown-item">Settings</div>
-              <div className="dropdown-item">Logout</div>
-            </div>
-          )}
-        </div>
-      </nav>
-    </div>
+    
+      <Box sx={{ paddingTop: "65px" }}></Box>
+    </Box>
   );
 }
