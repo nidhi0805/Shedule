@@ -1,4 +1,7 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom"; 
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css"; 
 
 const categories = [
   {
@@ -23,6 +26,7 @@ export default function Categories() {
   const [selectedOptions, setSelectedOptions] = useState([]);
   const maxSelection = 4;
   const isMaxReached = selectedOptions.length >= maxSelection;
+  const navigate = useNavigate(); 
 
   const handleOptionClick = (option) => {
     if (selectedOptions.includes(option)) {
@@ -35,7 +39,11 @@ export default function Categories() {
   };
 
   const handleSubmit = () => {
-    alert("Selected options: " + selectedOptions.join(", "));
+ 
+    toast.success("Your response has been saved!");
+    setTimeout(() => {
+      navigate('/Calendar');
+    }, 2000);
   };
 
   return (
@@ -110,6 +118,7 @@ export default function Categories() {
       >
         Submit
       </button>
+      <ToastContainer />
     </div>
   );
 }

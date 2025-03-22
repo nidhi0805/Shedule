@@ -39,7 +39,7 @@ const Signup = () => {
       setErrors(validationErrors);
     } else {
 
-      navigate('/next-page');;
+      navigate('/Calendar');
 
     }
   };
