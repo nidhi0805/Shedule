@@ -1,0 +1,105 @@
+.schedule {
+    padding: 20px;
+    font-family: Arial, sans-serif;
+    margin: auto;
+  }
+  
+  .time-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(6, auto);
+    gap: 50px;
+    justify-content: center;
+  }
+  
+  .time-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    padding: 17px;
+    border: 2px solid #ccc;
+    border-radius: 10px;
+    width: 100%;
+    min-height: 100px;
+    cursor: pointer;
+    background-color: #f9f9f9;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .time-card:hover {
+    background-color: #e6f7ff;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  }
+  
+  .time-label {
+    font-size: 14px;
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+  
+  .task {
+    padding: 5px;
+    background-color: #ffeb3b;
+    border-radius: 5px;
+    font-size: 12px;
+    text-align: center;
+  }
+  
+  .task-placeholder {
+    font-style: italic;
+    color: #888;
+    font-size: 12px;
+  }
+  
+
+  .popup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 300px;
+  }
+  
+  .popup input,
+  .popup select {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  
+  .popup button {
+    padding: 10px 20px;
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .popup button:hover {
+    background-color: #45a049;
+  }
+  
+
+  @media (max-width: 768px) {
+    .time-grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 50px; 
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .time-grid {
+      grid-template-columns: repeat(1, 1fr);
+      gap: 20px;
+    }
+  }
+  
