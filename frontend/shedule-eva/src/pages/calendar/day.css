@@ -1,13 +1,12 @@
 .schedule {
-    padding: 20px;
     font-family: Arial, sans-serif;
     margin: auto;
   }
   
   .time-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    grid-template-rows: repeat(6, auto);
+    grid-template-columns: repeat(6, 1fr);
+    grid-template-rows: repeat(4, auto);
     gap: 50px;
     justify-content: center;
   }
@@ -21,7 +20,7 @@
     border: 2px solid #ccc;
     border-radius: 10px;
     width: 100%;
-    min-height: 100px;
+    min-height: 80px;
     cursor: pointer;
     background-color: #f9f9f9;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);

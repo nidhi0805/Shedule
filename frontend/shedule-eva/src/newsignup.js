@@ -1,24 +1,27 @@
 import React, { useState } from 'react';
 import { TextField, Button, Card, CardContent, Typography, Box, Container, Alert } from '@mui/material';
+
 import { useNavigate } from 'react-router-dom';
 
 const Signup = () => {
   const navigate = useNavigate();
+
+
   const [formData, setFormData] = useState({
     name: '',
     email: '',
-    dateOfBirth: ''
+    dateOfBirth: '',
   });
   const [errors, setErrors] = useState({});
 
   const handleInputChange = (e) => {
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     });
     setErrors({
       ...errors,
-      [e.target.name]: ''
+      [e.target.name]: '',
     });
   };
 
@@ -35,7 +38,9 @@ const Signup = () => {
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
     } else {
+
       navigate('/next-page');;
+
     }
   };
 
@@ -106,13 +111,12 @@ const Signup = () => {
                 value={formData.dateOfBirth}
                 onChange={handleInputChange}
                 InputLabelProps={{
-                    shrink: true, // Ensures the label is always above the input
+                  shrink: true, // Ensures the label is always above the input
                 }}
-                placeholder="" // Removes the placeholder to avoid merging
                 error={!!errors.dateOfBirth}
                 helperText={errors.dateOfBirth}
                 InputProps={{
-                    style: { backgroundColor: '#fff', borderRadius: '5px', height: '56px' },
+                  style: { backgroundColor: '#fff', borderRadius: '5px', height: '56px' },
                 }}
               />
             </Box>
