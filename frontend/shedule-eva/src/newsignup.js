@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { TextField, Button, Card, CardContent, Typography, Box, Container, Alert } from '@mui/material';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 const Signup = () => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -35,7 +35,7 @@ const Signup = () => {
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
     } else {
-      history.push('/next-page');
+      navigate('/next-page');;
     }
   };
 
