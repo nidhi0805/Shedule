@@ -6,6 +6,7 @@ import Chatbot from './pages/chatbot';
 import CustomCalendar from "./pages/calendar/calendar";
 import Signup from "./pages/newsignup";
 import Categories from "./pages/categories";
+import Day from "./pages/calendar/day";
 import Summary from "./pages/summary";
 
 const timeSlots = Array.from({ length: 16 }, (_, i) => `${i + 7}:00`);
@@ -85,6 +86,8 @@ const App = () => {
         <Route path="/Calendar" element={<CustomCalendar />} /> 
         <Route path="/Categories" element={<Categories />} />
         <Route path="/Summary" element={<Summary />} />
+        <Route path="/Categories" element={<Categories />} />
+        <Route path="/Schedule" element={<Day />} />
       </Routes>
     </div>
   );
