@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom"; 
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css"; 
-
+import './categories.css';
 const categories = [
   {
     title: "Self Care",
@@ -39,7 +39,6 @@ export default function Categories() {
   };
 
   const handleSubmit = () => {
- 
     toast.success("Your response has been saved!");
     setTimeout(() => {
       navigate('/Calendar');
@@ -47,49 +46,18 @@ export default function Categories() {
   };
 
   return (
-    <div style={{ maxWidth: "1000px", margin: "0 auto", padding: "20px", textAlign: "center" }}>
-      <h1 style={{ fontSize: "24px", fontWeight: "bold", color: "#333" }}>Categories</h1>
-      <p style={{ color: "#666", marginBottom: "20px" }}>Select up to 4 from the below options</p>
-      <div style={{ display: "flex", justifyContent: "space-between", gap: "10px", flexWrap: "nowrap" }}>
+    <div className="categories-container">
+      <h1 className="categories-header">Categories</h1>
+      <p className="categories-subheader">Select up to 4 from the below options</p>
+      <div className="categories-grid">
         {categories.map((category) => (
-          <div key={category.title} style={{ 
-            border: "2px solid #ddd", 
-            padding: "20px", 
-            borderRadius: "12px", 
-            flex: 1, 
-            minWidth: 0, 
-            display: "flex", 
-            flexDirection: "column", 
-            justifyContent: "space-between",
-            boxShadow: "0 4px 10px rgba(0, 0, 0, 0.2)",
-            transition: "transform 0.3s ease, box-shadow 0.3s ease",
-            backgroundColor: "#fff",
-            cursor: "pointer",
-            transform: "translateY(-3px)"
-          }}>
-            <h2 style={{ fontSize: "18px", fontWeight: "bold", color: "#444" }}>{category.title}</h2>
-            <div style={{ display: "flex", flexDirection: "column", gap: "10px", alignItems: "center", width: "100%" }}>
+          <div key={category.title} className="category-card">
+            <h2 className="category-title">{category.title}</h2>
+            <div className="option-container">
               {category.options.map((option) => (
                 <button
                   key={option}
-                  style={{
-                    padding: "10px", 
-                    width: "90%", 
-                    height: "40px", 
-                    borderRadius: "15px",
-                    border: "2px solid",
-                    fontSize: "14px",
-                    cursor: isMaxReached && !selectedOptions.includes(option) ? "not-allowed" : "pointer",
-                    backgroundColor: selectedOptions.includes(option) ? "#7D5BA6" : isMaxReached ? "#e0e0e0" : "#fff",
-                    color: selectedOptions.includes(option) ? "#fff" : "#000", 
-                    borderColor: selectedOptions.includes(option) ? "#7D5BA6" : "#ccc", 
-                    transition: "all 0.3s ease",
-                    textAlign: "center",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    opacity: isMaxReached && !selectedOptions.includes(option) ? 0.5 : 1
-                  }}
+                  className={`option-button ${selectedOptions.includes(option) ? 'selected' : ''} ${isMaxReached && !selectedOptions.includes(option) ? 'disabled' : ''}`}
                   onClick={() => handleOptionClick(option)}
                   disabled={isMaxReached && !selectedOptions.includes(option)}
                 >
@@ -102,19 +70,7 @@ export default function Categories() {
       </div>
       <button
         onClick={handleSubmit}
-        style={{
-          marginTop: "20px",
-          padding: "10px 20px",
-          fontSize: "16px",
-          fontWeight: "bold",
-          color: "#fff",
-          backgroundColor: "#7D5BA6",
-          border: "none",
-          borderRadius: "8px",
-          cursor: "pointer",
-          transition: "background 0.3s ease",
-          boxShadow: "0 4px 10px rgba(0, 0, 0, 0.2)"
-        }}
+        className="submit-button"
       >
         Submit
       </button>
