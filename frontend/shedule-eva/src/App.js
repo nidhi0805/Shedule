@@ -3,16 +3,10 @@ import "react-calendar/dist/Calendar.css";
 import "./App.css";
 import React, { useState, useEffect } from "react";
 import Chatbot from './pages/chatbot';
-<<<<<<< Updated upstream
+
 import Signup from "./newsignup";
 import Categories from './categories'; 
-=======
-import Signup from "./signup";
 import CustomCalendar from "./pages/calendar/calendar";
-
-
-
->>>>>>> Stashed changes
 
 
 const timeSlots = Array.from({ length: 16 }, (_, i) => `${i + 7}:00`);
@@ -87,114 +81,12 @@ const App = () => {
   
   return (
     <div className="app">
-<<<<<<< Updated upstream
-      <h1>Shedule</h1>
-      <Calendar value={selectedDate} onChange={setSelectedDate} />
-      <h2>Schedule for {selectedDate.toDateString()}</h2>
-      <div className="schedule">
-        {timeSlots.map((time) => (
-          <div key={time} className="time-block">
-            <div className="time-label">{time}</div>
-            {tasks[selectedDate.toDateString()]?.[time] ? (
-              <div className={`task ${tasks[selectedDate.toDateString()][time].type.toLowerCase()}`}>
-                {tasks[selectedDate.toDateString()][time].name}
-              </div>
-            ) : (
-              <button onClick={() => handleAddTask(time)}>+</button>
-            )}
-          </div>
-        ))}
-      </div>
-  
-      {showForm.open && (
-        <div className="popup">
-          <h3>Add Task @ {showForm.time}</h3>
-          <input
-            placeholder="Task Name"
-            value={newTask.name}
-            onChange={(e) => setNewTask({ ...newTask, name: e.target.value })}
-          />
-          <select
-            value={newTask.type}
-            onChange={(e) => setNewTask({ ...newTask, type: e.target.value })}
-          >
-            <option>Work</option>
-            <option>Self-care</option>
-            <option>Chore</option>
-            <option>Workout</option>
-          </select>
-          <button onClick={handleSubmit}>Save</button>
-        </div>
-      )}
-  
-      {/* Eva assistant component */}
-      <Chatbot />
-  
-      {/* Signup component */}
-      <Signup />
-  
-      {/* Categories component */}
-      <Categories />
-=======
-      {/* <h1>Shedule </h1>
-      <Calendar value={selectedDate} onChange={setSelectedDate} />
-     
-
-    
 <Chatbot />
-<Signup/> */}
+<Signup/> 
 <CustomCalendar/>
->>>>>>> Stashed changes
+
     </div>
   )};
-  
-//   return (
-//     <div className="app">
-//       <h1>Shedule </h1>
-//       <Calendar value={selectedDate} onChange={setSelectedDate} />
-//       <h2>Schedule for {selectedDate.toDateString()}</h2>
-//       <div className="schedule">
-//         {timeSlots.map((time) => (
-//           <div key={time} className="time-block">
-//             <div className="time-label">{time}</div>
-//             {tasks[selectedDate.toDateString()]?.[time] ? (
-//               <div className={`task ${tasks[selectedDate.toDateString()][time].type.toLowerCase()}`}>
-//                 {tasks[selectedDate.toDateString()][time].name}
-//               </div>
-//             ) : (
-//               <button onClick={() => handleAddTask(time)}>+</button>
-//             )}
-//           </div>
-//         ))}
-//       </div>
-
-//       {showForm.open && (
-//         <div className="popup">
-//           <h3>Add Task @ {showForm.time}</h3>
-//           <input
-//             placeholder="Task Name"
-//             value={newTask.name}
-//             onChange={(e) => setNewTask({ ...newTask, name: e.target.value })}
-//           />
-//           <select
-//             value={newTask.type}
-//             onChange={(e) => setNewTask({ ...newTask, type: e.target.value })}
-//           >
-//             <option>Work</option>
-//             <option>Self-care</option>
-//             <option>Chore</option>
-//             <option>Workout</option>
-//           </select>
-//           <button onClick={handleSubmit}>Save</button>
-//         </div>
-//       )}
-
-//       {/* Eva assistant component */}
-// <Chatbot />
-// <Signup/>
-//     </div>
-//   );
-// };
 
 
 export default App;
