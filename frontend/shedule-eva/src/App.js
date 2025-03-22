@@ -82,7 +82,7 @@ const App = () => {
   return (
     <div className="app">
 <Chatbot />
-<Signup/> 
+{/* <Signup/>  */}
 <CustomCalendar/>
 
     </div>

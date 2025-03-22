@@ -12,8 +12,10 @@ const CustomCalendar = () => {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedDay, setSelectedDay] = useState(null);
 
+
   const today = new Date();
   today.setHours(0, 0, 0, 0); 
+
 
   const generateCalendar = () => {
     const month = currentDate.getMonth();
@@ -25,9 +27,12 @@ const CustomCalendar = () => {
     const startDay = firstDay.getDay();
 
     const days = [];
+
+
     for (let i = 0; i < startDay; i++) {
       days.push(null);
     }
+
 
     for (let day = 1; day <= daysInMonth; day++) {
       days.push(day);
@@ -36,15 +41,18 @@ const CustomCalendar = () => {
     return days;
   };
 
+
   const goToPreviousMonth = () => {
     setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1));
   };
+
 
   const goToNextMonth = () => {
     setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1));
   };
 
   const days = generateCalendar();
+
 
   const isPastDay = (day) => {
     if (!day) return false; 
@@ -64,7 +72,7 @@ const CustomCalendar = () => {
     return (
       <Day
         day={selectedDay}
-        month={currentDate.getMonth()} // Pass numeric month index here
+        month={months[currentDate.getMonth()]}
         year={currentDate.getFullYear()}
         onBack={handleBackToCalendar}
       />
