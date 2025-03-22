@@ -1,4 +1,4 @@
-/* Container for the whole summary page */
+
 .summary-container {
   display: flex;
   justify-content: center;
@@ -7,7 +7,7 @@
   background-color: #f4f4f4;
 }
 
-/* Sticky note style */
+
 .sticky-note {
   position: relative;
   padding: 24px;
@@ -16,11 +16,11 @@
   width: 90%;
   max-width: 400px;
 
-  /* Add a yellowish fade effect */
+
   background: linear-gradient(
     135deg,
-    rgba(255, 253, 213, 0.7) 0%,   /* Soft faded yellow */
-    rgba(255, 255, 255, 0.9) 100%   /* White base */
+    rgba(255, 253, 213, 0.7) 0%, 
+    rgba(255, 255, 255, 0.9) 100%   
   );
 
   color: #333;
@@ -30,7 +30,7 @@
   font-family: 'Poppins', sans-serif;
 }
 
-/* Sticky pin at the top center */
+
 .sticky-pin {
   position: absolute;
   top: -12px;
@@ -45,7 +45,7 @@
   z-index: 10;
 }
 
-/* Lined paper effect */
+
 .sticky-note::before {
   content: "";
   position: absolute;
@@ -63,7 +63,7 @@
   pointer-events: none;
 }
 
-/* Date header styling */
+
 .summary-date {
   font-family: 'Permanent Marker', cursive;
   color: #333;
@@ -73,14 +73,14 @@
   margin-bottom: 16px;
 }
 
-/* Loading state */
+
 .summary-loading {
   font-style: italic;
   text-align: center;
   color: #7f8c8d;
 }
 
-/* Error state */
+
 .summary-error {
   font-style: italic;
   text-align: center;
@@ -88,7 +88,7 @@
   font-weight: bold;
 }
 
-/* Task count */
+
 .summary-task-count {
   font-weight: bold;
   text-align: center;
@@ -96,14 +96,14 @@
   margin-bottom: 12px;
 }
 
-/* Divider */
+
 .summary-divider {
   margin-top: 12px;
   margin-bottom: 12px;
   background-color: #dcdcdc;
 }
 
-/* Task list */
+
 .task-list {
   padding-left: 0;
 }
@@ -126,7 +126,7 @@
   color: #f39c12;
 }
 
-/* No tasks message */
+
 .summary-no-tasks {
   font-style: italic;
   font-size: 16px;
@@ -134,12 +134,12 @@
   color: #7f8c8d;
 }
 
-/* Hover effect */
+
 .sticky-note:hover {
   transform: rotate(0deg) scale(1.03);
   background: linear-gradient(
     135deg,
     rgba(255, 253, 213, 0.8) 0%,
     rgba(255, 255, 255, 1) 100%
-  ); /* Slightly stronger yellow on hover */
+  ); 
 }
