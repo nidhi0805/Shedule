@@ -44,36 +44,24 @@ def construct_phase_and_activities(days_since_last_period):
         f"You are Eva, a planner assistant.\n"
         f"Cycle phase: {phase}.\n"
         f"For each of the 4 categories: Self-Care, Physical Health, Mental Wellness, and Productivity & Growth,\n"
-        f"replace **all** activities with new ones that are best suited for this phase.\n"
+        f"replace activities with new ones that are best suited for this phase and activities should be of 4 words maximum.\n"
         f"Keep activities realistic, gentle, and 1-hour long.\n"
         f"Return a JSON object with the following format:\n"
         f"{{\n"
         f"  \"Self-Care\": [\n"
         f"    {{\"activity\": \"<new activity>\", \"duration\": \"1 hour\"}},\n"
-        f"    {{\"activity\": \"<new activity>\", \"duration\": \"1 hour\"}},\n"
-        f"    {{\"activity\": \"<new activity>\", \"duration\": \"1 hour\"}},\n"
-        f"    {{\"activity\": \"<new activity>\", \"duration\": \"1 hour\"}}\n"
         f"  ],\n"
         f"  \"Physical Health\": [\n"
         f"    {{\"activity\": \"<new activity>\", \"duration\": \"1 hour\"}},\n"
-        f"    {{\"activity\": \"<new activity>\", \"duration\": \"1 hour\"}},\n"
-        f"    {{\"activity\": \"<new activity>\", \"duration\": \"1 hour\"}},\n"
-        f"    {{\"activity\": \"<new activity>\", \"duration\": \"1 hour\"}}\n"
         f"  ],\n"
         f"  \"Mental Wellness\": [\n"
         f"    {{\"activity\": \"<new activity>\", \"duration\": \"1 hour\"}},\n"
-        f"    {{\"activity\": \"<new activity>\", \"duration\": \"1 hour\"}},\n"
-        f"    {{\"activity\": \"<new activity>\", \"duration\": \"1 hour\"}},\n"
-        f"    {{\"activity\": \"<new activity>\", \"duration\": \"1 hour\"}}\n"
         f"  ],\n"
         f"  \"Productivity & Growth\": [\n"
         f"    {{\"activity\": \"<new activity>\", \"duration\": \"1 hour\"}},\n"
-        f"    {{\"activity\": \"<new activity>\", \"duration\": \"1 hour\"}},\n"
-        f"    {{\"activity\": \"<new activity>\", \"duration\": \"1 hour\"}},\n"
-        f"    {{\"activity\": \"<new activity>\", \"duration\": \"1 hour\"}}\n"
         f"  ]\n"
         f"}}\n"
-        f"Ensure that this is valid JSON without any extra characters or incomplete strings. Provide specific activities based on the phase you are in."
+        f"Ensure that this is valid JSON without any extra characters or incomplete strings. Provide specific activities based on the phase you are in with only 4 words."
     )
 
     return phase, prompt
@@ -107,7 +95,7 @@ def chat():
 
     if intent == "greet":
         return jsonify({
-            "reply": "Hi! I'm Eva. Would you like us to tailor your suggestions based on your cycle?"
+            "reply": "Hi Jane! I'm Eva. Would you like us to tailor your suggestions based on your cycle?"
         })
     
     if intent == "cycle_opt_in_yes":
@@ -130,10 +118,17 @@ def chat():
 
             if phase:
                 llm_response = query_ollama(prompt)
-                print("LLM Response:", llm_response)  # Log the LLM response to ensure it's as expected
 
+                # Parse the LLM response if it's a string
+                try:
+                    llm_response = json.loads(llm_response)  # Ensure it's a dictionary
+                except json.JSONDecodeError:
+                    return jsonify({"reply": "Error processing the LLM response. Please try again."})
+
+                # Add email and next period date to the LLM response
                 llm_response["email"] = "jane.doe@gmail.com"
                 llm_response["nextPeriodDate"] = next_period_date.strftime("%Y-%m-%d")
+                print("LLM Response with email and next period date:", llm_response)  
 
                 # Send the LLM response to another API
                 send_data_to_api(llm_response)
@@ -141,7 +136,7 @@ def chat():
                 return jsonify({
                     "reply": f"You are currently in your {phase}. Here’s something tailored for you 🌼",
                     "suggestedActivities": llm_response,
-                    "email": "jane.doe@gmail.com",  # Add the email
+                    "email": "jane.doe@gmail.com",  # Add the email in the response too
                     "nextPeriodDate": next_period_date.strftime("%Y-%m-%d")
                 })
             else:
