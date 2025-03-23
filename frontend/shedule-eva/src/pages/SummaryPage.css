@@ -3,22 +3,20 @@
   justify-content: center;
   align-items: flex-start;
   padding: 15px;
+  padding-top: 0;
   min-height: 100vh;
 }
 
 .MuiCard-root.sticky-note {
   width: 320px;
-  height: 420px; 
+  height: 420px;
   background-color: #fffde7 !important;
+ 
   background-image:
-    repeating-linear-gradient(
-      0deg,
-      rgba(255, 255, 255, 0.5) 0px,
-      rgba(255, 255, 255, 0.5) 1px,
-      transparent 1px,
-      transparent 16px
-    ),
-    linear-gradient(to bottom right, rgba(255, 255, 255, 0.3), rgba(255, 245, 157, 0.5));
+    repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.5) 0px, rgba(255, 255, 255, 0.5) 1px, transparent 1px, transparent 16px),
+    linear-gradient(to bottom right, rgba(255, 255, 255, 0.3), rgba(255, 245, 157, 0.5)),
+    url('https://www.transparenttextures.com/patterns/diag-stripes.png'); 
+  background-size: cover; 
   box-shadow:
     4px 4px 10px rgba(0, 0, 0, 0.15),
     inset 0px 0px 3px rgba(0, 0, 0, 0.08);
@@ -26,23 +24,27 @@
   padding: 20px 16px 16px;
   position: relative;
   transition: transform 0.2s ease-in-out;
-  transform: none; 
+  transform: none;
   border: 1px solid #f7e48b;
   cursor: pointer;
+  overflow: visible; 
 }
 
-.sticky-pin {
-  width: 16px;
-  height: 16px;
-  background-color: rgb(221, 6, 6); 
-  border-radius: 50%;
+.paperclip-icon {
   position: absolute;
-  top: 7px;
-  left: 5px; 
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3), 
-              inset 0px 2px 2px rgba(255, 255, 255, 0.5);
+  top: -12px; 
+  left: 10px;
+  transform: rotate(20deg);
+  font-size: 40px !important; 
+  color: #555;
   z-index: 10; 
-  border: 2px solid rgb(117, 1, 1); 
+}
+
+.summary-date {
+  text-align: center;
+  font-size: 18px;
+  font-weight: bold;
+  margin-top: 10px;
 }
 
 .sticky-note {
