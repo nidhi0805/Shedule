@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom"; 
+import { useNavigate ,useParams} from "react-router-dom"; 
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css"; 
 import wellnessLogo from '../images/wellness.png';  
@@ -7,6 +7,7 @@ import physicalLogo from '../images/physical.png';
 import selfcare from '../images/selfcare.png'; 
 import growth from '../images/growth.png'; 
 import './categories.css';
+import { useUser } from '../userContext';
 
 const categories = [
   {
@@ -32,6 +33,9 @@ export default function Categories() {
   const maxSelection = 4;
   const isMaxReached = selectedOptions.length >= maxSelection;
   const navigate = useNavigate(); 
+  const user = useUser();
+  const { year, month, day } = useParams();
+  console.log("year",year);
 
   const handleOptionClick = (option) => {
     if (selectedOptions.includes(option)) {
@@ -42,12 +46,39 @@ export default function Categories() {
       }
     }
   };
+  const formattedDate = `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
 
-  const handleSubmit = () => {
-    toast.success("Your response has been saved!");
-    setTimeout(() => {
-      navigate('/Calendar');
-    }, 2000);
+  const handleSubmit = async () => {
+    if (selectedOptions.length === 0) {
+      toast.error("Please select at least one option.");
+      return;
+    }
+
+    const requestData = {
+      email: user.user.email,
+      date: formattedDate,
+      tasks: selectedOptions,
+    };
+
+    try {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/schedule-activities`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(requestData),
+      });
+
+      if (response.ok) {
+        toast.success("Your response has been saved!");
+        setTimeout(() => {
+          navigate('/Calendar');
+        }, 2000);
+      } else {
+        toast.error("Failed to submit activities.");
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      toast.error("An error occurred while submitting your activities.");
+    }
   };
 
   return (

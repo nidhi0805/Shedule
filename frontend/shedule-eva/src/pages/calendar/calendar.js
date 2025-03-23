@@ -51,15 +51,10 @@ const CustomCalendar = () => {
 
   const handleDayClick = (day) => {
     if (isPastDay(day)) return;
-
-    navigate('/Schedule', {
-      state: {
-        day,
-        month: currentDate.getMonth() + 1, 
-        year: currentDate.getFullYear(),
-      },
-    });
+  
+    navigate(`/schedule/${currentDate.getFullYear()}/${currentDate.getMonth() + 1}/${day}`);
   };
+  
 
   const days = generateCalendar();
 
