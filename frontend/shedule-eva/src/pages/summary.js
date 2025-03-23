@@ -10,6 +10,7 @@ const SummaryPage = () => {
   const [date, setDate] = useState(new Date());
   const [completionStatus, setCompletionStatus] = useState(new Array(24).fill(0));
 
+
   const formattedDate = date.toLocaleDateString('en-US', {
     weekday: 'long',
     year: 'numeric',

@@ -46,10 +46,9 @@ const App = () => {
       <Route path="/" element={<Signup />} /> 
         <Route path="/Calendar" element={<CalendarPage />} />
         <Route path="/Calendar" element={<CustomCalendar />} /> 
-        <Route path="/Categories" element={<Categories />} />
         <Route path="/Summary" element={<Summary />} />
-        <Route path="/Categories" element={<Categories />} />
-        <Route path="/Schedule" element={<Day />} />
+        <Route path="/Categories/:year/:month/:day" element={<Categories />} />
+        <Route path="/Schedule/:year/:month/:day" element={<Day />} />
       </Routes>
     </div>
   );

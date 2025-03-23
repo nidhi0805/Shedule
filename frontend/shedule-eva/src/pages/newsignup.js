@@ -3,8 +3,12 @@ import { TextField, Button, Card, CardContent, CardMedia, Box, Container, Alert 
 import { useNavigate } from 'react-router-dom';
 import './newsignup.css'; 
 import scheduleLogo from "../images/logo_shedule.png";
+import { toast, ToastContainer } from "react-toastify";
+import { useUser } from '../userContext'; 
+
 const Signup = () => {
   const navigate = useNavigate();
+  const { setUserEmail } = useUser(); 
 
   const [formData, setFormData] = useState({
     name: '',
@@ -12,6 +16,7 @@ const Signup = () => {
     dateOfBirth: '',
   });
   const [errors, setErrors] = useState({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleInputChange = (e) => {
     setFormData({
@@ -32,12 +37,40 @@ const Signup = () => {
     return newErrors;
   };
 
-  const handleNext = () => {
+  const handleNext = async () => {
     const validationErrors = validateForm();
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
     } else {
-      navigate('/Calendar');
+      try {
+        setIsSubmitting(true); 
+        const response = await fetch(`${process.env.REACT_APP_API_URL}/add-user`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            email: formData.email,
+            name: formData.name,
+            dob: formData.dateOfBirth,
+          }),
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          console.log('User added:', data);
+
+     
+          setUserEmail(formData.email); 
+
+          navigate('/Calendar'); 
+        } 
+      } catch (error) {
+        console.error('Error:', error);
+        toast.error("There was an error with the sign-up process.");
+      } finally {
+        setIsSubmitting(false); 
+      }
     }
   };
 
@@ -46,12 +79,12 @@ const Signup = () => {
       <Box className="card-container">
         <Card className="card">
           <CardContent className='card-content'>
-          <CardMedia className='card-media'
-        component="img"
-        height="194"
-        image={scheduleLogo}
-        alt="Logo"
-      />
+            <CardMedia className='card-media'
+              component="img"
+              height="194"
+              image={scheduleLogo}
+              alt="Logo"
+            />
             <Box marginBottom={2}>
               <TextField
                 label="Name"
@@ -106,8 +139,9 @@ const Signup = () => {
                 color="secondary"
                 onClick={handleNext}
                 className="button"
+                disabled={isSubmitting} 
               >
-                Next
+                {isSubmitting ? 'Signing Up...' : 'Sign Up'}
               </Button>
             </Box>
           </CardContent>
