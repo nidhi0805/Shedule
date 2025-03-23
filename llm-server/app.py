@@ -1,182 +1,20 @@
-# from flask import Flask, request, jsonify
-# from flask_cors import CORS
-# from datetime import datetime,timedelta
-# from dateutil import parser
-# import requests
-# import json
-
-# app = Flask(__name__)
-# CORS(app)
-
-# OLLAMA_API = "http://localhost:11434/api/generate"
-# MODEL = "mistral"
-
-# user_context = {
-#     "cycle_opted_in": False,
-#     "last_period_date": None
-# }
-
-# def query_ollama(prompt):
-#     payload = {
-#         "model": MODEL,
-#         "prompt": prompt,
-#         "stream": False
-#     }
-#     response = requests.post(OLLAMA_API, json=payload)
-#     return response.json().get("response", "Sorry, something went wrong.")
-
-# def construct_phase_and_activities(days_since_last_period):
-#     print(f"Days since last period: {days_since_last_period}")  # Debugging line
-
-#     if days_since_last_period <= 5:
-#         phase = "Menstrual Phase"
-#     elif 6 <= days_since_last_period <= 14:
-#         phase = "Follicular Phase"
-#     elif 15 <= days_since_last_period <= 17:
-#         phase = "Ovulatory Phase"
-#     elif 18 <= days_since_last_period <= 28:
-#         phase = "Luteal Phase"
-#     else:
-#         print("Phase determination failed.")  # Debugging line
-#         return None, None
-
-#     prompt = (
-#         f"You are Eva, a planner assistant.\n"
-#         f"Cycle phase: {phase}.\n"
-#         f"For each of the 4 categories: Self-Care, Physical Health, Mental Wellness, and Productivity & Growth,\n"
-#         f"replace activities with new ones that are best suited for this phase and activities should be of 4 words maximum.\n"
-#         f"Keep activities realistic, gentle, and 1-hour long.\n"
-#         f"Return a JSON object with the following format:\n"
-#         f"{{\n"
-#         f"  \"Self-Care\": [\n"
-#         f"    {{\"activity\": \"<new activity>\", \"duration\": \"1 hour\"}},\n"
-#         f"  ],\n"
-#         f"  \"Physical Health\": [\n"
-#         f"    {{\"activity\": \"<new activity>\", \"duration\": \"1 hour\"}},\n"
-#         f"  ],\n"
-#         f"  \"Mental Wellness\": [\n"
-#         f"    {{\"activity\": \"<new activity>\", \"duration\": \"1 hour\"}},\n"
-#         f"  ],\n"
-#         f"  \"Productivity & Growth\": [\n"
-#         f"    {{\"activity\": \"<new activity>\", \"duration\": \"1 hour\"}},\n"
-#         f"  ]\n"
-#         f"}}\n"
-#         f"Ensure that this is valid JSON without any extra characters or incomplete strings. Provide specific activities based on the phase you are in with only 4 words."
-#     )
-
-#     return phase, prompt
-
-# def send_data_to_api(data):
-#     # Hardcode the email
-#     email = "jane.doe@shedule.com"
-    
-#     # Build the target URL with the hardcoded email
-#     target_url = f"http://localhost:5002/get-all-activities/{email}"
-    
-#     headers = {
-#         'Content-Type': 'application/json',
-#     }
-    
-#     # Send the POST request to the target API with the data
-#     response = requests.post(target_url, json=data, headers=headers)
-    
-#     # Check the response from the API
-#     if response.status_code == 200:
-#         print("Data successfully sent to target API!")
-#         print("Response from API:", response.json())  # Log the response from the target API
-#     else:
-#         print(f"Failed to send data. Status code: {response.status_code}, Response: {response.text}")
-
-# @app.route('/chat', methods=['POST'])
-# def chat():
-#     data = request.json
-#     intent = data.get("intent", "")
-#     last_period_date = data.get("lastPeriodDate", "")
-
-#     if intent == "greet":
-#         return jsonify({
-#             "reply": "Hi Jane! I'm Eva. Would you like us to tailor your suggestions based on your cycle?"
-#         })
-    
-#     if intent == "cycle_opt_in_yes":
-#         user_context["cycle_opted_in"] = True
-#         return jsonify({"reply": "When did your last period start?"})
-
-#     if intent == "submit_period_date" and last_period_date:
-#         try:
-#             last_date = parser.parse(last_period_date).date()
-#             days_ago = (datetime.today().date() - last_date).days
-#             print(f"Last period date: {last_date}, Days ago: {days_ago}")  # Debugging line
-#             user_context["last_period_date"] = last_date
-
-#             next_period_date = last_date + timedelta(days=28)
-#             print(f"Next period date: {next_period_date}") 
-
-#             # Ensure correct phase determination
-#             phase, prompt = construct_phase_and_activities(days_ago)
-#             print(f"Phase: {phase}")  # Debugging line to verify phase determination
-
-#             if phase:
-#                 llm_response = query_ollama(prompt)
-
-#                 # Parse the LLM response if it's a string
-#                 try:
-#                     llm_response = json.loads(llm_response)  # Ensure it's a dictionary
-#                 except json.JSONDecodeError:
-#                     return jsonify({"reply": "Error processing the LLM response. Please try again."})
-
-#                 # Add email and next period date to the LLM response
-#                 llm_response["email"] = "jane.doe@gmail.com"
-#                 llm_response["nextPeriodDate"] = next_period_date.strftime("%Y-%m-%d")
-#                 print("LLM Response with email and next period date:", llm_response)  
-
-#                 # Send the LLM response to another API
-#                 send_data_to_api(llm_response)
-
-#                 return jsonify({
-#                     "reply": f"You are currently in your {phase}. Here’s something tailored for you 🌼",
-#                     "suggestedActivities": llm_response,
-#                     "email": "jane.doe@gmail.com",  # Add the email in the response too
-#                     "nextPeriodDate": next_period_date.strftime("%Y-%m-%d")
-#                 })
-#             else:
-#                 return jsonify({
-#                     "reply": "We couldn’t determine the cycle phase. Please re-enter the date or explore options.",
-#                     "options": ["Enter date again", "More options"]
-#                 })
-
-#         except Exception as e:
-#             print("Date parsing error:", e)
-#             return jsonify({"reply": "Sorry, I couldn't understand that. Please enter the date in YYYY-MM-DD format."})
-
-#     return jsonify({"reply": "I'm not sure I understood that. Let's start again!"})
-
-# if __name__ == "__main__":
-#     app.run(port=5001)
-
-
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from datetime import datetime, timedelta
-from dateutil import parser
 import requests
 import json
 import re
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, resources={r"/chat": {"origins": "*"}})
 
 OLLAMA_API = "http://localhost:11434/api/generate"
 MODEL = "mistral"
 
-# Specific email for fetching activities
-EMAIL = "ananya@example.com"
-DATE = "2025-03-21"
-
 # Restricted activities for each phase
 RESTRICTED_ACTIVITIES = {
-    "Follicular Phase": ["sauna"],
-    "Menstrual Phase": ["soulcycle", "Workout"],  # Added "Workout"
+    "Follicular Phase": ["Sauna"],
+    "Menstrual Phase": ["SoulCycle", "Workout"],  # Added "Workout"
     "Ovulatory Phase": ["HIIT"],
     "Luteal Phase": ["Explore Cafes"]
 }
@@ -216,7 +54,6 @@ def fetch_activities(email, date):
         return None
 
 def get_replacement_activity(phase, unsuitable_activity):
-    # Generate a prompt for Ollama to suggest a replacement activity
     prompt = (
         f"You are Eva, a planner assistant. The user is in their {phase} phase. "
         f"The activity '{unsuitable_activity}' is not recommended for this phase. "
@@ -227,11 +64,9 @@ def get_replacement_activity(phase, unsuitable_activity):
         f"}}\n"
     )
 
-    # Query Ollama for the replacement activity
     llm_response = query_ollama(prompt)
 
     try:
-        # Clean and parse the Ollama response
         cleaned_response = clean_json_response(llm_response)
         if not cleaned_response:
             raise ValueError("No valid JSON found in Ollama response.")
@@ -241,47 +76,40 @@ def get_replacement_activity(phase, unsuitable_activity):
         return replacement_activity
     except (json.JSONDecodeError, ValueError) as e:
         print(f"Failed to parse Ollama response: {e}. Using default replacement activity.")
-        return "Gentle Stretching"  # Default fallback activity
+        return "Gentle Stretching"
 
 def replace_most_unsuitable_activity(activities, phase):
-    # Get the restricted activities for the current phase
     restricted_activities = RESTRICTED_ACTIVITIES.get(phase, [])
     print(f"Phase: {phase}")  # Debugging line
     print(f"Restricted activities for this phase: {restricted_activities}")  # Debugging line
 
-    # Find the first restricted activity in the array
     for i, activity in enumerate(activities):
         if activity in restricted_activities:
-            # Get a replacement activity from Ollama
             replacement_activity = get_replacement_activity(phase, activity)
             print(f"Replacing '{activity}' with '{replacement_activity}'")  # Debugging line
-            # Replace the activity
             activities[i] = replacement_activity
-            break  # Only replace one activity
+            break
     else:
         print("No restricted activities found in the list.")  # Debugging line
 
     return activities
 
-def send_activities_to_api(email, date, activities):
-    # Define the API endpoint
-    api_url = "http://localhost:5002/api/replace-user-activity"
-
-    # Prepare the data payload
+def send_activities_to_api(email, date, activities, period_date):
+    api_url = f"http://localhost:5002/api/replace-user-activity/"
     data = {
         "email": email,
         "date": date,
-        "activities": activities
+        "activities": activities,
+        "period_date": period_date
     }
+    print(f"Sending activities to API: {api_url}")  # D
 
-    # Send the PUT request
     headers = {"Content-Type": "application/json"}
     response = requests.put(api_url, json=data, headers=headers)
 
-    # Check the response
     if response.status_code == 200:
         print("Activities successfully sent to the API!")
-        print("Response from API:", response.json())  # Log the response from the API
+        print("Response from API:", response.json())
     else:
         print(f"Failed to send activities. Status code: {response.status_code}, Response: {response.text}")
 
@@ -289,73 +117,79 @@ def construct_phase(days_since_last_period):
     print(f"Days since last period: {days_since_last_period}")  # Debugging line
 
     if days_since_last_period <= 5:
-        phase = "Menstrual Phase"
+        return "Menstrual Phase", "Day 1 to Day 5: The menstrual phase begins with the first day of your period and lasts until the bleeding ends. This phase is often associated with fatigue and lower energy levels."
     elif 6 <= days_since_last_period <= 14:
-        phase = "Follicular Phase"
+        return "Follicular Phase", "Day 6 to Day 14: The follicular phase begins after your period ends and lasts until ovulation. It's characterized by increased energy and improved mood."
     elif 15 <= days_since_last_period <= 17:
-        phase = "Ovulatory Phase"
+        return "Ovulatory Phase", "Day 15 to Day 17: The ovulatory phase is when you ovulate. It's the most fertile phase, and energy levels tend to peak."
     elif 18 <= days_since_last_period <= 28:
-        phase = "Luteal Phase"
+        return "Luteal Phase", "Day 18 to Day 28: The luteal phase follows ovulation and lasts until your next period starts. It's associated with changes in mood and energy as your body prepares for menstruation."
     else:
-        print("Phase determination failed.")  # Debugging line
-        return None
-
-    return phase
+        return None, "Phase determination failed."
 
 @app.route('/chat', methods=['POST'])
 def chat():
-    data = request.json
-    intent = data.get("intent", "")
-    last_period_date = data.get("lastPeriodDate", "")
+    try:
+        data = request.json
+        intent = data.get("intent", "")
+        last_period_date = data.get("lastPeriodDate", None)
+        user_email = data.get("email", None)  # Get email from the request
+        print(f"User email: {user_email}")  # Debugging line
+        current_date = data.get("currentDate", None) 
 
-    if intent == "greet":
-        return jsonify({
-            "reply": "Hi Jane! I'm Eva. Would you like us to tailor your suggestions based on your cycle?"
-        })
+        if intent == "greet":
+            return jsonify({
+                "reply": "Hi Jane! I'm Eva. Would you like us to tailor your suggestions based on your cycle?"
+            })
 
-    if intent == "cycle_opt_in_yes":
-        user_context["cycle_opted_in"] = True
-        return jsonify({"reply": "When did your last period start?"})
+        if intent == "cycle_opt_in_yes":
+            user_context["cycle_opted_in"] = True
+            return jsonify({"reply": "When did your last period start?"})
 
-    if intent == "submit_period_date" and last_period_date:
-        try:
-            last_date = parser.parse(last_period_date).date()
-            days_ago = (datetime.today().date() - last_date).days
-            print(f"Last period date: {last_date}, Days ago: {days_ago}")  # Debugging line
-            user_context["last_period_date"] = last_date
+        # Ensure last_period_date is provided
+        if intent == "submit_period_date":
+            if not last_period_date:
+                return jsonify({"reply": "Please provide your last period date in YYYY-MM-DD format."})
+            if not user_email or not current_date:
+                return jsonify({"reply": "Email or current date is missing."})
 
-            next_period_date = last_date + timedelta(days=28)
-            print(f"Next period date: {next_period_date}")
+            try:
+                # Ensure last_period_date is in the correct format
+                last_period_date = datetime.strptime(last_period_date, "%Y-%m-%d")
+                next_period_date = last_period_date + timedelta(days=28)
+                period_date = next_period_date.strftime("%Y-%m-%d")
+                print(f"Next period date: {period_date}")
 
-            # Determine the phase
-            phase = construct_phase(days_ago)
-            print(f"Phase: {phase}")  # Debugging line to verify phase determination
-
-            if phase:
-                # Fetch activities from the API using the specific email and current date
-                activities_data = fetch_activities(EMAIL, DATE)
+                activities_data = fetch_activities(user_email, current_date)
                 if activities_data:
-                    # Replace the most unsuitable activity
-                    modified_activities = replace_most_unsuitable_activity(activities_data["activities"], phase)
-                    activities_data["activities"] = modified_activities
+                    # Calculate phase based on last period date
+                    days_since_last_period = (datetime.today().date() - last_period_date.date()).days
+                    phase, phase_description = construct_phase(days_since_last_period)
+                    print(f"Phase: {phase}")
+                    if phase:
+                        modified_activities = replace_most_unsuitable_activity(activities_data["activities"], phase)
+                        activities_data["activities"] = modified_activities
+                        print(f"Modified activities: {activities_data['activities']}")
+                        send_activities_to_api(user_email, current_date, activities_data["activities"], period_date)
+                        return jsonify({
+                            "reply": f"Customizing your calendar based on your {phase}...{phase_description}",
+                            "email": user_email,
+                            "date": current_date,
+                            "activities": activities_data["activities"],
+                            "period_date": period_date,
+                        })
+                return jsonify({"reply": "Failed to fetch activities."})
 
-                    # Send the modified activities to the API
-                    send_activities_to_api(EMAIL, DATE, modified_activities)
+            except ValueError as e:
+                # Handle any errors that may arise due to incorrect date format
+                print(f"Date parsing error: {e}")
+                return jsonify({"reply": "Sorry, I couldn't understand that. Please enter the date in YYYY-MM-DD format."})
 
-                    # Return the modified activities
-                    return jsonify({
-                        "email": EMAIL,
-                        "date": DATE,
-                        "activities": modified_activities
-                    })
-                else:
-                    return jsonify({"reply": "Failed to fetch activities."})
+        return jsonify({"reply": "I'm not sure I understood that. Let's start again!"})
 
-        except Exception as e:
-            print("Date parsing error:", e)
-            return jsonify({"reply": "Sorry, I couldn't understand that. Please enter the date in YYYY-MM-DD format."})
-
-    return jsonify({"reply": "I'm not sure I understood that. Let's start again!"})
+    except Exception as e:
+        print(f"Error processing request: {e}")
+        return jsonify({"reply": "Sorry, something went wrong. Please try again."})
 
 if __name__ == "__main__":
     app.run(port=5001)
