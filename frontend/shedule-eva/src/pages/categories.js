@@ -12,19 +12,19 @@ import { useUser } from '../userContext';
 const categories = [
   {
     title: "Self Care",
-    options: ["Skincare routine", "Reading book", "Journaling", "Taking a bath", "Digital detox"]
+    options: ["Skincare routine", "Reading book", "Journaling", "Taking a bath", "Digital detox", "Sauna"]
   },
   {
     title: "Physical Health",
-    options: ["Morning walk", "Home workout", "Yoga", "Dance class", "Strength training"]
+    options: ["Morning walk", "HIIT", "Yoga", "Dance class", "Strength training", "SoulCycle"]
   },
   {
     title: "Mental Wellness",
-    options: ["Meditation", "Gratitude journaling", "Breathing exercises", "Therapy session", "Guided visualization"]
+    options: ["Meditation", "Gratitude journaling", "Breathing exercises", "Therapy session", "Guided visualization","Explore Cafes"]
   },
   {
     title: "Productivity & Growth",
-    options: ["Learning a new skill", "Weekly reflection", "Listening to podcasts", "Declutter workspace", "Personal finance check-in"]
+    options: ["Learning a new skill", "Weekly reflection", "Listening to podcasts", "Declutter workspace", "Personal finance check-in","Leetcode"]
   }
 ];
 

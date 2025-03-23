@@ -10,6 +10,8 @@ const months = [
 
 const CustomCalendar = () => {
   const [currentDate, setCurrentDate] = useState(new Date());
+  const [tasksCompleted, setTasksCompleted] = useState(5);  // Example: Number of tasks completed
+  const [totalTasks, setTotalTasks] = useState(10);  // Example: Total tasks in the month
   const navigate = useNavigate();
 
   const today = new Date();
@@ -58,29 +60,35 @@ const CustomCalendar = () => {
 
   const days = generateCalendar();
 
+  const progress = (tasksCompleted / totalTasks) * 100;
+
   return (
-    <div id="calendar">
-      <div className="calendar-header">
-        <button onClick={goToPreviousMonth}>&lt;</button>
-        <span>{months[currentDate.getMonth()]} {currentDate.getFullYear()}</span>
-        <button onClick={goToNextMonth}>&gt;</button>
-      </div>
-      <div className="calendar-grid">
-        {daysOfWeek.map((day) => (
-          <div key={day} className="calendar-day-header">
-            {day}
-          </div>
-        ))}
-        {days.map((day, index) => (
-          <div
-            key={index}
-            className={`calendar-day ${!day ? 'empty' : ''} ${isPastDay(day) ? 'past-day' : ''}`}
-            onClick={() => handleDayClick(day)}
-            style={isPastDay(day) ? { pointerEvents: 'none', color: 'gray' } : {}}
-          >
-            {day}
-          </div>
-        ))}
+    <div id="calendar-container">
+
+      {/* Calendar */}
+      <div id="calendar">
+        <div className="calendar-header">
+          <button onClick={goToPreviousMonth}>&lt;</button>
+          <span>{months[currentDate.getMonth()]} {currentDate.getFullYear()}</span>
+          <button onClick={goToNextMonth}>&gt;</button>
+        </div>
+        <div className="calendar-grid">
+          {daysOfWeek.map((day) => (
+            <div key={day} className="calendar-day-header">
+              {day}
+            </div>
+          ))}
+          {days.map((day, index) => (
+            <div
+              key={index}
+              className={`calendar-day ${!day ? 'empty' : ''} ${isPastDay(day) ? 'past-day' : ''}`}
+              onClick={() => handleDayClick(day)}
+              style={isPastDay(day) ? { pointerEvents: 'none', color: 'gray' } : {}}
+            >
+              {day}
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );
