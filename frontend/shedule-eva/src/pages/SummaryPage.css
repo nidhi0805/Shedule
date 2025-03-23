@@ -106,3 +106,29 @@
   text-decoration: line-through;
   color: #757575;
 }
+.task-list {
+  max-height: 250px;
+  overflow-y: auto;
+  padding-right: 8px;
+  flex-grow: 1; 
+}
+
+
+.task-list::-webkit-scrollbar {
+  width: 8px; 
+}
+
+.task-list::-webkit-scrollbar-track {
+  background: #fffde7;
+  border-radius: 4px;
+}
+
+.task-list::-webkit-scrollbar-thumb {
+  background: #f7e48b; 
+  border-radius: 4px;
+  border: 2px solid #fffde7; 
+}
+
+.task-list::-webkit-scrollbar-thumb:hover {
+  background: #f0d76d; 
+}
