@@ -53,6 +53,12 @@ const CustomCalendar = () => {
     return dayDate < today;
   };
 
+  const isToday = (day) => {
+    if (!day) return false;
+    const dayDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), day);
+    return dayDate.getTime() === today.getTime();
+  };
+
   const handleDayClick = (day) => {
     if (isPastDay(day)) return;
 
@@ -86,7 +92,11 @@ const CustomCalendar = () => {
           {days.map((day, index) => (
             <div
               key={index}
-              className={`calendar-day ${!day ? 'empty' : ''} ${isPastDay(day) ? 'past-day' : ''}`}
+              className={`calendar-day 
+                ${!day ? 'empty' : ''} 
+                ${isPastDay(day) ? 'past-day' : ''} 
+                ${isToday(day) ? 'today' : ''} 
+              `}
               onClick={() => handleDayClick(day)}
               style={isPastDay(day) ? { pointerEvents: 'none', color: 'gray' } : {}}
             >
