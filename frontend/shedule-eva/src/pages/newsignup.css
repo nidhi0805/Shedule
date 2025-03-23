@@ -10,7 +10,7 @@
     border-radius: 5px;
     width: 100%;
     margin-top: 30px;
-    background-color: #9370db !important;
+    background-color: #c4b8e0 !important;
 
   }
   
@@ -61,10 +61,10 @@
     padding: 1.5rem 4rem;
     font-size: 16px;
     font-weight: bold;
-    background-color: #fbaed2;
+    background-color: #ba99ba;
   }
   
   .button:hover {
-    background-color: #f48fb1;
+    background-color: #ba99ba;
   }
   

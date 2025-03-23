@@ -44,12 +44,26 @@ const App = () => {
       <Chatbot />
       <Routes>
       <Route path="/" element={<Signup />} /> 
+        <Route path="/Calendar" element={<CalendarPage />} />
         <Route path="/Calendar" element={<CustomCalendar />} /> 
         <Route path="/Categories" element={<Categories />} />
         <Route path="/Summary" element={<Summary />} />
         <Route path="/Categories" element={<Categories />} />
         <Route path="/Schedule" element={<Day />} />
       </Routes>
+    </div>
+  );
+};
+
+const CalendarPage = () => {
+  return (
+    <div className="calendar-page-container">
+      <div className="calendar-container">
+        <CustomCalendar />
+      </div>
+      <div className="summary-container">
+        <Summary />
+      </div>
     </div>
   );
 };

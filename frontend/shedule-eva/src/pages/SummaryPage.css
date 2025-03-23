@@ -1,13 +1,14 @@
-
 .summary-container {
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start;
+  padding: 15px;
   min-height: 100vh;
 }
 
 .MuiCard-root.sticky-note {
   width: 320px;
+  height: 420px; 
   background-color: #fffde7 !important;
   background-image:
     repeating-linear-gradient(
@@ -22,95 +23,33 @@
     4px 4px 10px rgba(0, 0, 0, 0.15),
     inset 0px 0px 3px rgba(0, 0, 0, 0.08);
   border-radius: 8px;
-  padding: 16px;
+  padding: 20px 16px 16px;
   position: relative;
   transition: transform 0.2s ease-in-out;
-  transform: rotate(-3deg);
+  transform: none; 
   border: 1px solid #f7e48b;
   cursor: pointer;
 }
 
-.MuiCard-root.sticky-note:hover {
-  background-color: #fff9c4 !important;
-  transform: translateY(-3px) rotate(-3deg);
-}
-
 .sticky-pin {
-  width: 20px;
-  height: 20px;
-  background-color: #3e2401;
+  width: 16px;
+  height: 16px;
+  background-color: rgb(221, 6, 6); 
   border-radius: 50%;
   position: absolute;
-  top: -10px;
-  left: 50%;
-  transform: translateX(-50%);
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  top: 7px;
+  left: 5px; 
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3), 
+              inset 0px 2px 2px rgba(255, 255, 255, 0.5);
+  z-index: 10; 
+  border: 2px solid rgb(117, 1, 1); 
 }
 
-.summary-date {
-  font-size: 16px;
-  font-weight: bold;
-  color: #444;
-  text-align: center;
+.sticky-note {
+  position: relative;
 }
 
-.summary-task-count {
-  font-size: 16px;
-  font-weight: bold;
-  color: #444;
-  text-align: center;
-  margin-bottom: 8px;
-}
-
-.task-checkbox {
-  appearance: none;
-  width: 18px;
-  height: 18px;
-  border: 2px solid #aaa;
-  border-radius: 50%; /* Makes it a circle */
-  background-color: white;
-  cursor: pointer;
-  transition: background-color 0.2s ease, border-color 0.2s ease;
-  outline: none;
-  margin-right: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.task-checkbox:checked {
-  background-color: #4caf50;
-  border-color: #4caf50;
-}
-
-.task-checkbox:disabled {
-  background-color: #ddd;
-  border-color: #bbb;
-  cursor: not-allowed;
-}
-
-.task-checkbox:checked::before {
-  content: '';
-  display: block;
-  width: 8px;
-  height: 8px;
-  background-color: white;
-  border-radius: 50%;
-}
-
-.summary-task.completed {
-  text-decoration: line-through;
-  color: #aaa;
-  pointer-events: none;
-}
-
-.task-list {
-  padding-left: 0;
-}
-
-.summary-task {
-  font-size: 16px;
-  color: #444;
-  padding: 8px;
-  border-bottom: 1px solid #eee;
+.MuiCard-root.sticky-note:hover {
+  background-color: #fff9c4 !important;
+  transform: translateY(-3px);
 }
