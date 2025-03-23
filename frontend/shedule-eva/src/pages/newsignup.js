@@ -4,11 +4,9 @@ import { useNavigate } from 'react-router-dom';
 import './newsignup.css'; 
 import scheduleLogo from "../images/logo_shedule.png";
 import { toast, ToastContainer } from "react-toastify";
-import { useUser } from '../userContext'; 
 
 const Signup = () => {
   const navigate = useNavigate();
-  const { setUserEmail } = useUser(); 
 
   const [formData, setFormData] = useState({
     name: '',
@@ -36,7 +34,6 @@ const Signup = () => {
     if (!formData.dateOfBirth) newErrors.dateOfBirth = 'Date of Birth is required';
     return newErrors;
   };
-
   const handleNext = async () => {
     const validationErrors = validateForm();
     if (Object.keys(validationErrors).length > 0) {
@@ -55,14 +52,14 @@ const Signup = () => {
             dob: formData.dateOfBirth,
           }),
         });
-
+  
         if (response.ok) {
           const data = await response.json();
           console.log('User added:', data);
-
-     
-          setUserEmail(formData.email); 
-
+  
+          sessionStorage.setItem('userEmail', formData.email);
+  
+  
           navigate('/Calendar'); 
         } 
       } catch (error) {
@@ -73,6 +70,7 @@ const Signup = () => {
       }
     }
   };
+  
 
   return (
     <Container maxWidth="sm">

@@ -3,38 +3,49 @@ import { Button } from '@mui/material';
 import { useNavigate, useParams } from 'react-router-dom';
 import TaskModal from './taskModal';
 import './day.css';
-import { useUser } from '../../userContext';
 
 const Day = () => {
   const navigate = useNavigate();
   const { year, month, day } = useParams();
-  const user = useUser();
   const [newTask, setNewTask] = useState({ name: '', type: 'Work' });
   const [showForm, setShowForm] = useState({ open: false, time: '' });
   const [tasks, setTasks] = useState({});
   const timeSlots = Array.from({ length: 24 }, (_, i) => `${i}:00`);
 
   const formattedDate = `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+  const [userEmail, setUserEmail] = useState(null);
 
 
   useEffect(() => {
+    const storedEmail = sessionStorage.getItem('userEmail');
+    if (storedEmail) {
+      setUserEmail(storedEmail);
+    } else {
+     
+      navigate('/');
+    }
     const fetchUserActivities = async () => {
-      if (!user?.user?.email) return; 
+      if (!storedEmail) return;
       try {
-        const response = await fetch(`${process.env.REACT_APP_API_URL}/get-user-activity/${user.user.email}/${formattedDate}`);
+        const response = await fetch(
+          `${process.env.REACT_APP_API_URL}/get-user-activity/${storedEmail}/${formattedDate}`
+        );
+  
         if (response.ok) {
           const data = await response.json();
-          const activityData = data.activities || []; 
-          
-         
-          const taskObj = activityData.reduce((acc, activity, index) => {
+          const { activities = [], colorcode = [] } = data; 
+  
+          const taskObj = activities.reduce((acc, activity, index) => {
             if (activity) {
               const hour = `${index}:00`;
-              acc[hour] = { name: activity, type: 'Work' }; 
+              acc[hour] = { 
+                name: activity, 
+                type: colorcode[index] || 'Work' 
+              };
             }
             return acc;
           }, {});
-
+  
           setTasks((prevTasks) => ({
             ...prevTasks,
             [formattedDate]: taskObj,
@@ -46,9 +57,10 @@ const Day = () => {
         console.error('Error fetching activities:', error);
       }
     };
-
+  
     fetchUserActivities();
-  }, [user, formattedDate]);
+  }, [formattedDate]);
+  
 
   const handleAddTask = (time) => {
     setShowForm({ open: true, time });
@@ -78,16 +90,19 @@ const Day = () => {
     if (Object.keys(tasks).length === 0) return;
 
     const activities = Array(24).fill(null);
+    const colorcode = Array(24).fill('Add'); 
 
     Object.entries(tasks[formattedDate] || {}).forEach(([time, activity]) => {
       const hour = parseInt(time.split(':')[0], 10);
       activities[hour] = activity.name;
+      colorcode[hour] = activity.type || 'Add';
     });
 
     const requestData = {
-      email: user.user.email,
+      email: userEmail,
       date: formattedDate,
       activities,
+      colorcode
     };
 
     try {

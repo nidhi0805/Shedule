@@ -120,7 +120,7 @@
 }
 
 .task.chore {
-  background: #3498db;
+  background:#BC8F8F;
 }
 
 .task.self-care {
@@ -129,4 +129,10 @@
 
 .task.workout {
   background: #27ae60;
+}
+.task.add{
+  background: #3498db;
+}
+.task.other{
+  background: #f39c12;
 }

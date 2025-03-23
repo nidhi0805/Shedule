@@ -26,10 +26,12 @@ const TaskModal = ({ open, time, newTask, setNewTask, handleSubmit, handleClose 
           <CloseIcon />
         </IconButton>
 
+
         <Typography variant="h5" fontWeight="bold" textAlign="center" mb={2}>
           Create Task
         </Typography>
 
+  
         <Box display="flex" alignItems="center" mb={2}>
           <AccessTimeFilledIcon sx={{ fontSize: 18, color: 'gray', mr: 1 }} />
           <Typography variant="body1" color="textSecondary">
@@ -37,28 +39,32 @@ const TaskModal = ({ open, time, newTask, setNewTask, handleSubmit, handleClose 
           </Typography>
         </Box>
 
+
         <TextField
           fullWidth
           variant="outlined"
           label="Task Name"
           value={newTask.name}
-          onChange={(e) => setNewTask({ ...newTask, name: e.target.value })}
+          onChange={(e) => setNewTask({ ...newTask, name: e.target.value })}  
           sx={{ marginBottom: 2 }}
         />
 
+      
         <Select
           fullWidth
           variant="outlined"
           value={newTask.type}
-          onChange={(e) => setNewTask({ ...newTask, type: e.target.value })}
+          onChange={(e) => setNewTask({ ...newTask, type: e.target.value })} 
           sx={{ marginBottom: 2 }}
         >
           <MenuItem value="Work">Work</MenuItem>
           <MenuItem value="Self-care">Self-care</MenuItem>
           <MenuItem value="Chore">Chore</MenuItem>
           <MenuItem value="Workout">Workout</MenuItem>
+          <MenuItem value="Other">Other</MenuItem>
         </Select>
 
+        {/* Save Button */}
         <Button variant="contained" color="success" fullWidth onClick={handleSubmit}>
           Save
         </Button>
