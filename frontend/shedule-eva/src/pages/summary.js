@@ -9,27 +9,29 @@ const SummaryPage = () => {
   const [error, setError] = useState('');
   const [date, setDate] = useState(new Date());
   const [completionStatus, setCompletionStatus] = useState(new Array(24).fill(0));
-
-
-  const formattedDate = date.toLocaleDateString('en-US', {
-    weekday: 'long',
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-    timeZone: 'America/New_York',
-  });
+  const [userEmail, setUserEmail] = useState(null);
 
   useEffect(() => {
-    const isoDate = date.toISOString().split('T')[0];
-    fetchTasks('ananya@example.com', isoDate);
+
+    const currentDate = new Date();
+    const isoDate = currentDate.toISOString().split('T')[0]; 
+
+    const storedEmail = sessionStorage.getItem('userEmail');
+    setUserEmail(storedEmail);
+
+
+    if (storedEmail) {
+      fetchTasks(storedEmail, isoDate);
+    }
   }, [date]);
 
-  const fetchTasks = async (email, date) => {
+  const fetchTasks = async (userEmail, date) => {
     try {
       setLoading(true);
       setError('');
 
-      const response = await axios.get(`http://localhost:5000/api/get-user-activity/${email}/${date}`);
+  
+      const response = await axios.get(`${process.env.REACT_APP_API_URL}/get-user-activity/${userEmail}/${date}`);
 
       if (response.data && response.data.activities) {
         const filteredTasks = response.data.activities.filter((task) => task !== null);
@@ -70,7 +72,7 @@ const SummaryPage = () => {
       <Card className="sticky-note">
         <div className="sticky-pin" />
         <CardContent>
-          <Typography className="summary-date">📅 {formattedDate}</Typography>
+          <Typography className="summary-date">📅 {date.toISOString().split('T')[0]}</Typography> {/* Display current date */}
 
           {loading && <Typography className="summary-loading">Loading tasks...</Typography>}
           {!loading && error && <Typography className="summary-error">{error}</Typography>}

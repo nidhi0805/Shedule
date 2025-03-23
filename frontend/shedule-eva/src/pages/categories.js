@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate ,useParams} from "react-router-dom"; 
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css"; 
@@ -7,7 +7,7 @@ import physicalLogo from '../images/physical.png';
 import selfcare from '../images/selfcare.png'; 
 import growth from '../images/growth.png'; 
 import './categories.css';
-import { useUser } from '../userContext';
+
 
 const categories = [
   {
@@ -33,9 +33,9 @@ export default function Categories() {
   const maxSelection = 4;
   const isMaxReached = selectedOptions.length >= maxSelection;
   const navigate = useNavigate(); 
-  const user = useUser();
   const { year, month, day } = useParams();
   console.log("year",year);
+  const [userEmail, setUserEmail] = useState(null);
 
   const handleOptionClick = (option) => {
     if (selectedOptions.includes(option)) {
@@ -55,7 +55,7 @@ export default function Categories() {
     }
 
     const requestData = {
-      email: user.user.email,
+      email: userEmail,
       date: formattedDate,
       tasks: selectedOptions,
     };
@@ -80,7 +80,10 @@ export default function Categories() {
       toast.error("An error occurred while submitting your activities.");
     }
   };
-
+  useEffect(() => {
+    const storedEmail = sessionStorage.getItem('userEmail');
+    setUserEmail(storedEmail);
+    });
   return (
     <div className="categories-container">
       <h1 className="categories-header">Categories</h1>
