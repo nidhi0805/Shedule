@@ -13,32 +13,41 @@ const Signup = () => {
     email: '',
     dateOfBirth: '',
   });
-  const [errors, setErrors] = useState({});
+  const [errors, setErrors] = useState([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [formSubmitted, setFormSubmitted] = useState(false);
 
   const handleInputChange = (e) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
     });
-    setErrors({
-      ...errors,
-      [e.target.name]: '',
-    });
+  };
+
+  const validateEmail = (email) => {
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    return emailRegex.test(email);
   };
 
   const validateForm = () => {
-    const newErrors = {};
-    if (!formData.name) newErrors.name = 'Name is required';
-    if (!formData.email) newErrors.email = 'Email is required';
-    if (!formData.dateOfBirth) newErrors.dateOfBirth = 'Date of Birth is required';
+    const newErrors = [];
+    if (!formData.name) newErrors.push('Name is required.');
+    if (!formData.email) {
+      newErrors.push('Email is required.');
+    } else if (!validateEmail(formData.email)) {
+      newErrors.push('Invalid email address.');
+    }
+    if (!formData.dateOfBirth) newErrors.push(' Date of Birth is required.');
     return newErrors;
   };
+
   const handleNext = async () => {
+    setFormSubmitted(true);
     const validationErrors = validateForm();
-    if (Object.keys(validationErrors).length > 0) {
+    if (validationErrors.length > 0) {
       setErrors(validationErrors);
     } else {
+      setErrors([]); // Clear errors if validation passes
       try {
         setIsSubmitting(true); 
         const response = await fetch(`${process.env.REACT_APP_API_URL}/add-user`, {
@@ -56,10 +65,7 @@ const Signup = () => {
         if (response.ok) {
           const data = await response.json();
           console.log('User added:', data);
-  
           sessionStorage.setItem('userEmail', formData.email);
-  
-  
           navigate('/Calendar'); 
         } 
       } catch (error) {
@@ -70,7 +76,6 @@ const Signup = () => {
       }
     }
   };
-  
 
   return (
     <Container maxWidth="sm">
@@ -83,6 +88,16 @@ const Signup = () => {
               image={scheduleLogo}
               alt="Logo"
             />
+
+            {/* Error Pop-Up Box (Appears above the Sign-Up button) */}
+            {formSubmitted && errors.length > 0 && (
+              <Alert className="error-popup" severity="error">
+                {errors.map((error, index) => (
+                  <div key={index}>{error}</div>
+                ))}
+              </Alert>
+            )}
+
             <Box marginBottom={2}>
               <TextField
                 label="Name"
@@ -92,8 +107,6 @@ const Signup = () => {
                 name="name"
                 value={formData.name}
                 onChange={handleInputChange}
-                error={!!errors.name}
-                helperText={errors.name}
                 className="text-field"
               />
               <TextField
@@ -105,8 +118,6 @@ const Signup = () => {
                 type="email"
                 value={formData.email}
                 onChange={handleInputChange}
-                error={!!errors.email}
-                helperText={errors.email}
                 className="text-field"
               />
               <TextField
@@ -121,16 +132,10 @@ const Signup = () => {
                 InputLabelProps={{
                   shrink: true,
                 }}
-                error={!!errors.dateOfBirth}
-                helperText={errors.dateOfBirth}
                 className="text-field-height"
               />
             </Box>
-            {Object.keys(errors).length > 0 && (
-              <Alert className="error-alert" severity="error">
-                Please fix the errors above to proceed.
-              </Alert>
-            )}
+
             <Box className="button-container">
               <Button
                 variant="contained"
