@@ -131,9 +131,6 @@ const Day = () => {
           <CalendarTodayIcon fontSize="medium" /> 
           <span style={{ fontFamily: 'monospace', fontSize: '1.5rem' }}>{formattedDate}</span>
         </div>
-        {/* <Button variant="outlined" color="success" onClick={handleDoneClick} disabled={Object.keys(tasks).length === 0}>
-          Done
-        </Button> */}
         <Button 
           variant="contained" 
           color="success" 
