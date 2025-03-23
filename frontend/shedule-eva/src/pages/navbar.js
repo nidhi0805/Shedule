@@ -17,13 +17,13 @@ export default function Navbar() {
 
   return (
     <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="fixed" sx={{ backgroundColor: "#aa94d8", boxShadow: "0 2px 5px rgba(0, 0, 0, 0.1)" }}>
+      <AppBar position="fixed" sx={{ backgroundColor: "#9C8CB9", boxShadow: "0 2px 5px rgba(0, 0, 0, 0.1)" }}>
         <Toolbar sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         
           <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
             {/* <img src={scheduleLogo} alt="Logo" style={{ height: "30px", width: "auto" }} /> */}
             <Button color="inherit" href="/" sx={{ fontWeight: "bold" }}>Home</Button>
-            <Button color="inherit" href="/Calendar" sx={{ fontWeight: "bold" }}>Calendar</Button>
+            <Button color="inherit" href="/Calendar" sx={{ fontWeight: "bold" }}>CALENDER</Button>
           </Box>
 
         

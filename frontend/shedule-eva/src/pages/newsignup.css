@@ -10,8 +10,7 @@
     border-radius: 5px;
     width: 100%;
     margin-top: 30px;
-    background-color: #c4b8e0 !important;
-
+    background-color: #BA96C1 !important;
   }
   
   .card-media {
@@ -19,12 +18,9 @@
     margin-top: 0; 
     padding-top: 0; 
     object-fit: cover !important;
-    height: 100 !important;
-    /* background-size: cover; */
-    
- 
+    height: 200 !important;
+    /* background-size: cover; */ 
   }
-  
 
   .card-header {
     font-weight: bold;
@@ -52,6 +48,18 @@
     color: #721c24;
   }
   
+  .error-popup {
+    margin-bottom: 1.5rem;
+    background-color: #f8d7da !important;
+    color: #721c24 !important;
+    font-weight: bold;
+    padding: 1rem;
+    border-radius: 5px;
+    text-align: left;
+    box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.1);
+    width: 100%;
+}
+
   .button-container {
     text-align: center;
     margin-top: 2rem;
