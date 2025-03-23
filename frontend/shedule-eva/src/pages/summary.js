@@ -1,18 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Card, CardContent, Typography, List, ListItem, Divider, Box } from '@mui/material';
-import { Note, AttachFile, CheckCircle } from '@mui/icons-material'; // Import CheckCircle icon
+import { Note, AttachFile, CheckCircle } from '@mui/icons-material';
 import './SummaryPage.css';
-<<<<<<< Updated upstream
-import { AttachFile } from '@mui/icons-material';
-=======
->>>>>>> Stashed changes
 
 const SummaryPage = () => {
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [completionStatus, setCompletionStatus] = useState(null);
+  const [completionStatus, setCompletionStatus] = useState([]); // ✅ Initialized as empty array
   const [userEmail, setUserEmail] = useState(null);
 
   const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -20,32 +16,20 @@ const SummaryPage = () => {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
 
-<<<<<<< Updated upstream
   const formattedDate = `${today.getFullYear()}-${(today.getMonth() + 1).toString().padStart(2, '0')}-${today
     .getDate()
     .toString()
     .padStart(2, '0')}`;
 
-=======
->>>>>>> Stashed changes
   useEffect(() => {
     const storedEmail = sessionStorage.getItem('userEmail');
     setUserEmail(storedEmail);
 
     if (storedEmail) {
-<<<<<<< Updated upstream
       fetchTasks(storedEmail, formattedDate);
       fetchStatus(storedEmail, formattedDate);
     }
   }, []);
-=======
-      fetchTasks(
-        storedEmail,
-        `${today.getFullYear()}-${(today.getMonth() + 1) < 10 ? '0' + (today.getMonth() + 1) : (today.getMonth() + 1)}-${today.getDate() < 10 ? '0' + today.getDate() : today.getDate()}`
-      );
-    }
-  }, []); 
->>>>>>> Stashed changes
 
   const fetchTasks = async (email, date) => {
     try {
@@ -113,10 +97,6 @@ const SummaryPage = () => {
   return (
     <Box className="summary-container">
       <Card className="sticky-note">
-<<<<<<< Updated upstream
-        {/* Sticky Pin */}
-=======
->>>>>>> Stashed changes
         <AttachFile className="paperclip-icon" />
         <CardContent>
           <Typography className="summary-date">
@@ -130,7 +110,7 @@ const SummaryPage = () => {
           {!loading && error && <Typography className="summary-error">{error}</Typography>}
 
           {/* Task Count */}
-          {!loading && !error && completionStatus !== null && (
+          {!loading && !error && completionStatus.length > 0 && (
             <Typography className="summary-task-count">
               {remainingTasksCount > 0
                 ? `${remainingTasksCount} task${remainingTasksCount > 1 ? 's' : ''} left`
@@ -140,18 +120,15 @@ const SummaryPage = () => {
 
           <Divider className="summary-divider" />
 
-<<<<<<< Updated upstream
           {/* Task List */}
-          {!loading &&
-            !error &&
-            tasks.length > 0 &&
-            completionStatus !== null && (
-              <List className="task-list">
-                {tasks.map((task, index) => (
-                  <ListItem
-                    key={index}
-                    className={`summary-task ${completionStatus[index] ? 'completed' : ''}`}
-                  >
+          {!loading && !error && tasks.length > 0 && completionStatus.length > 0 && (
+            <List className="task-list">
+              {tasks.map((task, index) => (
+                <ListItem
+                  key={index}
+                  className={`summary-task ${completionStatus[index] ? 'completed' : ''}`}
+                >
+                  <div className="task-checkbox-container">
                     <input
                       type="checkbox"
                       className="task-checkbox"
@@ -159,32 +136,15 @@ const SummaryPage = () => {
                       disabled={completionStatus[index] === 1}
                       onChange={() => handleCheckboxChange(index)}
                     />
-                    {task}
-                  </ListItem>
-                ))}
-              </List>
-            )}
-=======
-          <List className="task-list">
-            {tasks.map((task, index) => (
-              <ListItem key={index} className={`summary-task ${completionStatus[index] ? 'completed' : ''}`}>
-                <div className="task-checkbox-container">
-                  <input
-                    type="checkbox"
-                    className="task-checkbox"
-                    checked={completionStatus[index] === 1}
-                    disabled={completionStatus[index] === 1}
-                    onChange={() => handleCheckboxChange(index)}
-                  />
-                  {completionStatus[index] === 1 && (
-                    <CheckCircle className="check-icon" />
-                  )}
-                </div>
-                {task}
-              </ListItem>
-            ))}
-          </List>
->>>>>>> Stashed changes
+                    {completionStatus[index] === 1 && (
+                      <CheckCircle className="check-icon" />
+                    )}
+                  </div>
+                  {task}
+                </ListItem>
+              ))}
+            </List>
+          )}
         </CardContent>
       </Card>
     </Box>
