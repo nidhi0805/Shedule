@@ -8,8 +8,8 @@ const SummaryPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [date, setDate] = useState(new Date());
+  const [completionStatus, setCompletionStatus] = useState(new Array(24).fill(0));
 
-  // Format date to match PostgreSQL format and adjust for timezone
   const formattedDate = date.toLocaleDateString('en-US', {
     weekday: 'long',
     year: 'numeric',
@@ -30,10 +30,15 @@ const SummaryPage = () => {
 
       const response = await axios.get(`http://localhost:5000/api/get-user-activity/${email}/${date}`);
 
-      console.log('API Response:', response.data);
-
       if (response.data && response.data.activities) {
-        setTasks(response.data.activities.filter((task) => task !== null));
+        const filteredTasks = response.data.activities.filter((task) => task !== null);
+        setTasks(filteredTasks);
+
+        const newCompletionStatus = new Array(24).fill(0);
+        filteredTasks.forEach((task, index) => {
+          if (task.completed) newCompletionStatus[index] = 1;
+        });
+        setCompletionStatus(newCompletionStatus);
       } else {
         setTasks([]);
       }
@@ -46,60 +51,53 @@ const SummaryPage = () => {
     }
   };
 
+  const handleCheckboxChange = (index) => {
+    if (completionStatus[index] === 1) return;
+
+    const newCompletionStatus = [...completionStatus];
+    newCompletionStatus[index] = 1;
+    setCompletionStatus(newCompletionStatus);
+  };
+
+  const remainingTasksCount = tasks.reduce(
+    (count, _, index) => (completionStatus[index] === 0 ? count + 1 : count),
+    0
+  );
+
   return (
     <Box className="summary-container">
       <Card className="sticky-note">
-        {/* Sticky Pin */}
         <div className="sticky-pin" />
-
         <CardContent>
-          {/* Date Header */}
-          <Typography className="summary-date">
-            📅 {formattedDate}
-          </Typography>
+          <Typography className="summary-date">📅 {formattedDate}</Typography>
 
-          {/* Loading State */}
-          {loading && (
-            <Typography className="summary-loading">
-              Loading tasks...
-            </Typography>
-          )}
+          {loading && <Typography className="summary-loading">Loading tasks...</Typography>}
+          {!loading && error && <Typography className="summary-error">{error}</Typography>}
 
-          {/* Error State */}
-          {!loading && error && (
-            <Typography className="summary-error">
-              {error}
-            </Typography>
-          )}
-
-          {/* Number of Tasks */}
           {!loading && !error && (
             <Typography className="summary-task-count">
-              {tasks.length > 0
-                ? `${tasks.length} task${tasks.length > 1 ? 's' : ''} scheduled`
-                : 'No tasks scheduled'}
+              {remainingTasksCount > 0
+                ? `${remainingTasksCount} task${remainingTasksCount > 1 ? 's' : ''} left`
+                : 'All tasks completed! 🎉'}
             </Typography>
           )}
 
           <Divider className="summary-divider" />
 
-          {/* List of Tasks */}
-          {!loading && !error && tasks.length > 0 ? (
-            <List className="task-list">
-              {tasks.map((task, index) => (
-                <ListItem key={index} className="summary-task">
-                  {task}
-                </ListItem>
-              ))}
-            </List>
-          ) : (
-            !loading &&
-            !error && (
-              <Typography className="summary-no-tasks">
-                You have no tasks for this day.
-              </Typography>
-            )
-          )}
+          <List className="task-list">
+            {tasks.map((task, index) => (
+              <ListItem key={index} className={`summary-task ${completionStatus[index] ? 'completed' : ''}`}>
+                <input
+                  type="checkbox"
+                  className="task-checkbox"
+                  checked={completionStatus[index] === 1}
+                  disabled={completionStatus[index] === 1}
+                  onChange={() => handleCheckboxChange(index)}
+                />
+                {task}
+              </ListItem>
+            ))}
+          </List>
         </CardContent>
       </Card>
     </Box>
