@@ -16,57 +16,55 @@ const CustomCalendar = () => {
   const [tasksCompleted, setTasksCompleted] = useState(5);  
   const [totalTasks, setTotalTasks] = useState(10);  
   const [activityDates, setActivityDates] = useState([]); 
-  const [periodDays, setPeriodDays] = useState([]); // Array to store period days
-  const [nextPeriodDate, setNextPeriodDate] = useState(null); // Store the next period date
-  const [selectedDate, setSelectedDate] = useState(null); // Add this line to fix the error
+  const [periodDays, setPeriodDays] = useState([]); 
+  const [nextPeriodDate, setNextPeriodDate] = useState(null); 
+    const [selectedDate, setSelectedDate] = useState(null);
 
   const navigate = useNavigate();
 
   const today = new Date();
-  today.setHours(0, 0, 0, 0);  // Set the time to midnight to compare dates without time
+  today.setHours(0, 0, 0, 0);  
 
-  // Fetch next period date from the chatbot API
-  // Assuming this is your existing code, let's fix and improve it.
 
 
   useEffect(() => {
     const fetchNextPeriodDate = async () => {
       try {
-        // Get email from sessionStorage
+    
         const email = sessionStorage.getItem('userEmail');
   
-        // Get current date directly
+      
         const currentDateStr = new Date().toISOString().split('T')[0];
         console.log("Current Date for API Request:", currentDateStr);
   
-        // Call the API to get the user activities and period date
+   
         const response = await fetch(`http://localhost:5002/api/get-user-activity/${email}/${currentDateStr}`);
         const data = await response.json();
   
         const nextPeriodDateStr = data.period_date;
         console.log("Next Period Date from API:", nextPeriodDateStr);
   
-        // Ensure the period date is valid and parse it as a date
+    
         const nextPeriodDateObj = new Date(nextPeriodDateStr);
   
-        // Check if the period date is valid before proceeding
+
         if (nextPeriodDateObj.toString() !== 'Invalid Date') {
           setNextPeriodDate(nextPeriodDateObj);
   
-          // Calculate the period days (assuming the period lasts 5 days)
+   
           const periodDaysArray = [];
           for (let i = 0; i < 5; i++) {
             const periodDay = new Date(nextPeriodDateObj);
             periodDay.setDate(nextPeriodDateObj.getDate() + i);
   
-            // Ensure the period day is after today before adding to the list
+
             if (periodDay >= today) {
               periodDaysArray.push(periodDay.getDate());
             }
           }
   
           setPeriodDays(periodDaysArray);
-          console.log("Period Days:", periodDaysArray); // Debugging line
+          console.log("Period Days:", periodDaysArray); 
         } else {
           console.log("Invalid period date returned from the API.");
         }
@@ -76,7 +74,7 @@ const CustomCalendar = () => {
     };
   
     fetchNextPeriodDate();
-  }, []);  // Empty dependency array means it only runs once when the component mounts
+  }, []);  
   
 
   useEffect(() => {
@@ -173,17 +171,37 @@ const CustomCalendar = () => {
               {day}
             </div>
           ))}
-          {days.map((day, index) => (
-            <div
-              key={index}
-              className={`calendar-day ${!day ? 'empty' : ''} ${isPastDay(day) ? 'past-day' : ''} 
-                ${periodDays.includes(day) ? 'period-day' : ''}`}
-              onClick={() => handleDayClick(day)}
-              style={isPastDay(day) ? { pointerEvents: 'none', color: 'gray' } : {}}
-            >
-              {day}
-            </div>
-          ))}
+         {days.map((day, index) => {
+  let hasActivity = false;
+  let isPeriodDay = false;
+  let dayStr = "";
+
+  if (day) {
+    const dayDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), day);
+    dayStr = `${dayDate.getFullYear()}-${(dayDate.getMonth() + 1)
+      .toString()
+      .padStart(2, '0')}-${dayDate.getDate().toString().padStart(2, '0')}`;
+    hasActivity = activityDates.includes(dayStr);
+    isPeriodDay = periodDays.includes(day); 
+  }
+
+  return (
+    <div
+      key={index}
+      className={`calendar-day 
+        ${!day ? 'empty' : ''} 
+        ${isPastDay(day) ? 'past-day' : ''} 
+        ${isToday(day) ? 'today' : ''} 
+        ${isPeriodDay ? 'period-day' : ''}`} 
+      onClick={() => handleDayClick(day)}
+      style={isPastDay(day) ? { pointerEvents: 'none', color: 'gray' } : {}}
+    >
+      {day}
+      {day && hasActivity && <span className="activity-dot" title="Activity exists on this day"></span>}
+    </div>
+  );
+})}
+
         </div>
       </div>
 
@@ -191,6 +209,7 @@ const CustomCalendar = () => {
         <SummaryPage />
       </div>
     </div>
+    
   );
 };
 
