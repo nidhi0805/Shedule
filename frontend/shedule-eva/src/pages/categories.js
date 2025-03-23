@@ -49,10 +49,10 @@ export default function Categories() {
   const formattedDate = `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
 
   const handleSubmit = async () => {
-    if (selectedOptions.length === 0) {
-      toast.error("Please select at least one option.");
-      return;
-    }
+    // if (selectedOptions.length === 0) {
+    //   toast.error("Please select at least one option.");
+    //   return;
+    // }
 
     const requestData = {
       email: userEmail,
