@@ -47,7 +47,7 @@ const SummaryPage = () => {
     } catch (err) {
       console.error('Error fetching tasks:', err);
       setTasks([]);
-      setError('No tasks found for this date.');
+      setError('Looks like you are all caught up!');
     } finally {
       setLoading(false);
     }
@@ -100,27 +100,35 @@ const SummaryPage = () => {
         <AttachFile className="paperclip-icon" />
         <CardContent>
           <Typography className="summary-date">
+            Today<br/>
             {today.getDate()} {months[today.getMonth()]} {today.getFullYear()}
           </Typography>
 
-          {/* Loading */}
+       
           {loading && <Typography className="summary-loading">Loading tasks...</Typography>}
 
-          {/* Error */}
+    
           {!loading && error && <Typography className="summary-error">{error}</Typography>}
 
-          {/* Task Count */}
+
           {!loading && !error && completionStatus.length > 0 && (
-            <Typography className="summary-task-count">
-              {remainingTasksCount > 0
-                ? `${remainingTasksCount} task${remainingTasksCount > 1 ? 's' : ''} left`
-                : 'All tasks completed! 🎉'}
-            </Typography>
-          )}
+           <Typography className="summary-task-count">
+           {remainingTasksCount === 0 ? (
+             'All tasks completed! 🎉'
+           ) : remainingTasksCount === Math.ceil(tasks.length / 2) ? (
+             <>
+       
+               Almost there! {remainingTasksCount} task{remainingTasksCount > 1 ? 's' : ''} left ✨
+             </>
+           ) : (
+             `${remainingTasksCount} task${remainingTasksCount > 1 ? 's' : ''} left`
+           )}
+         </Typography>
+         )}
 
           <Divider className="summary-divider" />
 
-          {/* Task List */}
+   
           {!loading && !error && tasks.length > 0 && completionStatus.length > 0 && (
             <List className="task-list">
               {tasks.map((task, index) => (
