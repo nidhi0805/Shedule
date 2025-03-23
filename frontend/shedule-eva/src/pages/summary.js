@@ -118,7 +118,7 @@ const SummaryPage = () => {
            ) : remainingTasksCount === Math.ceil(tasks.length / 2) ? (
              <>
        
-               Almost there! {remainingTasksCount} task{remainingTasksCount > 1 ? 's' : ''} left ✨
+               Almost there! {remainingTasksCount} task{remainingTasksCount > 1 ? 's' : ''} left
              </>
            ) : (
              `${remainingTasksCount} task${remainingTasksCount > 1 ? 's' : ''} left`

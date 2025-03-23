@@ -47,7 +47,7 @@ const Signup = () => {
     if (validationErrors.length > 0) {
       setErrors(validationErrors);
     } else {
-      setErrors([]); // Clear errors if validation passes
+      setErrors([]); 
       try {
         setIsSubmitting(true); 
         const response = await fetch(`${process.env.REACT_APP_API_URL}/add-user`, {
@@ -89,7 +89,7 @@ const Signup = () => {
               alt="Logo"
             />
 
-            {/* Error Pop-Up Box (Appears above the Sign-Up button) */}
+         
             {formSubmitted && errors.length > 0 && (
               <Alert className="error-popup" severity="error">
                 {errors.map((error, index) => (

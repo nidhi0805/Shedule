@@ -10,7 +10,7 @@
 
 .MuiCard-root.sticky-note {
   width: 320px;
-  height: 420px;
+  max-height: 62vh;
   background-color: #fffde7 !important;
  
   background-image:
@@ -107,7 +107,7 @@
   color: #757575;
 }
 .task-list {
-  max-height: 250px;
+  max-height: 300px;
   overflow-y: auto;
   padding-right: 8px;
   flex-grow: 1; 
