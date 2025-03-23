@@ -9,7 +9,7 @@ const SummaryPage = () => {
   const [error, setError] = useState('');
   const [date, setDate] = useState(new Date());
 
-  // Format date to match PostgreSQL format and adjust for timezone
+ 
   const formattedDate = date.toLocaleDateString('en-US', {
     weekday: 'long',
     year: 'numeric',
