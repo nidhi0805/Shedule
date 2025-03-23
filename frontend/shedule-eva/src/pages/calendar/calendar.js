@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './calendar.css';
+import SummaryPage from '../summary'; 
 
 const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 const months = [
@@ -10,8 +11,9 @@ const months = [
 
 const CustomCalendar = () => {
   const [currentDate, setCurrentDate] = useState(new Date());
-  const [tasksCompleted, setTasksCompleted] = useState(5);  // Example: Number of tasks completed
-  const [totalTasks, setTotalTasks] = useState(10);  // Example: Total tasks in the month
+  const [selectedDate, setSelectedDate] = useState(null); 
+  const [tasksCompleted, setTasksCompleted] = useState(5);  
+  const [totalTasks, setTotalTasks] = useState(10);  
   const navigate = useNavigate();
 
   const today = new Date();
@@ -53,20 +55,23 @@ const CustomCalendar = () => {
 
   const handleDayClick = (day) => {
     if (isPastDay(day)) return;
-  
-    navigate(`/schedule/${currentDate.getFullYear()}/${currentDate.getMonth() + 1}/${day}`);
+
+    const selectedYear = currentDate.getFullYear();
+    const selectedMonth = currentDate.getMonth() + 1; 
+    const selectedDay = day;
+
+    setSelectedDate({ year: selectedYear, month: selectedMonth, day: selectedDay });
+
+    navigate(`/schedule/${selectedYear}/${selectedMonth}/${selectedDay}`);
   };
-  
 
   const days = generateCalendar();
 
   const progress = (tasksCompleted / totalTasks) * 100;
 
   return (
-    <div id="calendar-container">
-
-      {/* Calendar */}
-      <div id="calendar">
+    <div id="calendar-container" className="calendar-layout">
+      <div id="calendar" className="calendar">
         <div className="calendar-header">
           <button onClick={goToPreviousMonth}>&lt;</button>
           <span>{months[currentDate.getMonth()]} {currentDate.getFullYear()}</span>
@@ -89,6 +94,11 @@ const CustomCalendar = () => {
             </div>
           ))}
         </div>
+      </div>
+
+ 
+      <div id="summary" className="summary">
+        <SummaryPage />
       </div>
     </div>
   );

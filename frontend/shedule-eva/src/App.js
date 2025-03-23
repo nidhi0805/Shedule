@@ -7,7 +7,6 @@ import CustomCalendar from "./pages/calendar/calendar";
 import Signup from "./pages/newsignup";
 import Categories from "./pages/categories";
 import Day from "./pages/calendar/day";
-import Summary from "./pages/summary";
 import Navbar from "./pages/navbar";
 
 const timeSlots = Array.from({ length: 16 }, (_, i) => `${i + 7}:00`);
@@ -44,9 +43,7 @@ const App = () => {
       <Chatbot />
       <Routes>
       <Route path="/" element={<Signup />} /> 
-        <Route path="/Calendar" element={<CalendarPage />} />
         <Route path="/Calendar" element={<CustomCalendar />} /> 
-        <Route path="/Summary" element={<Summary />} />
         <Route path="/Categories/:year/:month/:day" element={<Categories />} />
         <Route path="/Schedule/:year/:month/:day" element={<Day />} />
       </Routes>
@@ -54,17 +51,17 @@ const App = () => {
   );
 };
 
-const CalendarPage = () => {
-  return (
-    <div className="calendar-page-container">
-      <div className="calendar-container">
-        <CustomCalendar />
-      </div>
-      <div className="summary-container">
-        <Summary />
-      </div>
-    </div>
-  );
-};
+// const CalendarPage = () => {
+//   return (
+//     <div className="calendar-page-container">
+//       <div className="calendar-container">
+//         <CustomCalendar />
+//       </div>
+//       <div className="summary-container">
+//         <Summary />
+//       </div>
+//     </div>
+//   );
+// };
 
 export default App;
