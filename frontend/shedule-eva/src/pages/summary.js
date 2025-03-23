@@ -1,8 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Card, CardContent, Typography, List, ListItem, Divider, Box } from '@mui/material';
+import { Note, AttachFile, CheckCircle } from '@mui/icons-material'; // Import CheckCircle icon
 import './SummaryPage.css';
+<<<<<<< Updated upstream
 import { AttachFile } from '@mui/icons-material';
+=======
+>>>>>>> Stashed changes
 
 const SummaryPage = () => {
   const [tasks, setTasks] = useState([]);
@@ -16,20 +20,32 @@ const SummaryPage = () => {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
 
+<<<<<<< Updated upstream
   const formattedDate = `${today.getFullYear()}-${(today.getMonth() + 1).toString().padStart(2, '0')}-${today
     .getDate()
     .toString()
     .padStart(2, '0')}`;
 
+=======
+>>>>>>> Stashed changes
   useEffect(() => {
     const storedEmail = sessionStorage.getItem('userEmail');
     setUserEmail(storedEmail);
 
     if (storedEmail) {
+<<<<<<< Updated upstream
       fetchTasks(storedEmail, formattedDate);
       fetchStatus(storedEmail, formattedDate);
     }
   }, []);
+=======
+      fetchTasks(
+        storedEmail,
+        `${today.getFullYear()}-${(today.getMonth() + 1) < 10 ? '0' + (today.getMonth() + 1) : (today.getMonth() + 1)}-${today.getDate() < 10 ? '0' + today.getDate() : today.getDate()}`
+      );
+    }
+  }, []); 
+>>>>>>> Stashed changes
 
   const fetchTasks = async (email, date) => {
     try {
@@ -97,7 +113,10 @@ const SummaryPage = () => {
   return (
     <Box className="summary-container">
       <Card className="sticky-note">
+<<<<<<< Updated upstream
         {/* Sticky Pin */}
+=======
+>>>>>>> Stashed changes
         <AttachFile className="paperclip-icon" />
         <CardContent>
           <Typography className="summary-date">
@@ -121,6 +140,7 @@ const SummaryPage = () => {
 
           <Divider className="summary-divider" />
 
+<<<<<<< Updated upstream
           {/* Task List */}
           {!loading &&
             !error &&
@@ -144,6 +164,27 @@ const SummaryPage = () => {
                 ))}
               </List>
             )}
+=======
+          <List className="task-list">
+            {tasks.map((task, index) => (
+              <ListItem key={index} className={`summary-task ${completionStatus[index] ? 'completed' : ''}`}>
+                <div className="task-checkbox-container">
+                  <input
+                    type="checkbox"
+                    className="task-checkbox"
+                    checked={completionStatus[index] === 1}
+                    disabled={completionStatus[index] === 1}
+                    onChange={() => handleCheckboxChange(index)}
+                  />
+                  {completionStatus[index] === 1 && (
+                    <CheckCircle className="check-icon" />
+                  )}
+                </div>
+                {task}
+              </ListItem>
+            ))}
+          </List>
+>>>>>>> Stashed changes
         </CardContent>
       </Card>
     </Box>

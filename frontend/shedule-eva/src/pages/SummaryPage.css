@@ -1,3 +1,4 @@
+
 .summary-container {
   display: flex;
   justify-content: center;
@@ -42,9 +43,20 @@
 
 .summary-date {
   text-align: center;
+  font-size: 26px !important; 
+  font-weight: bolder !important;  
+  margin-top: 10px;
+  font-family: 'Courier New', monospace !important;  
+  color: #333;
+  padding-bottom: 20px;
+}
+
+
+.summary-task-count {
+  text-align: center;
   font-size: 18px;
   font-weight: bold;
-  margin-top: 10px;
+  margin-top: 20px;
 }
 
 .sticky-note {
@@ -54,4 +66,43 @@
 .MuiCard-root.sticky-note:hover {
   background-color: #fff9c4 !important;
   transform: translateY(-3px);
+}
+
+.task-checkbox-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.task-checkbox {
+  width: 20px; 
+  height: 20px; 
+  border-radius: 50%;
+  border: 2px solid #555;
+  background-color: #fff;
+  cursor: pointer;
+  appearance: none;
+  position: relative;
+  transition: all 0.2s ease-in-out;
+}
+
+
+
+.task-checkbox:disabled {
+  cursor: not-allowed;
+  background-color: #4caf50;
+  border-color: #4caf50;
+
+}
+
+.check-icon {
+  position: absolute;
+  font-size: 16px;
+  color: white;
+}
+
+.summary-task.completed {
+  text-decoration: line-through;
+  color: #757575;
 }
