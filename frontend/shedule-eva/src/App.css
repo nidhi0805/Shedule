@@ -40,6 +40,24 @@ button {
   max-width: 200px;
 }
 
+.calendar-page-container {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start; 
+  gap: 20px;
+  padding: 20px;
+}
+
+.summary-container {
+  flex: 1;
+  max-width: 300px; /* Adjust width as needed */
+  max-height: max-content;
+}
+
+.calendar-container {
+  flex: 2;
+}
+
 @keyframes float {
   0%   { transform: translateY(0); }
   50%  { transform: translateY(-10px); }

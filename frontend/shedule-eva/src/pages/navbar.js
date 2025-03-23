@@ -17,7 +17,7 @@ export default function Navbar() {
 
   return (
     <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="fixed" sx={{ backgroundColor: "#D8BFD8", boxShadow: "0 2px 5px rgba(0, 0, 0, 0.1)" }}>
+      <AppBar position="fixed" sx={{ backgroundColor: "#aa94d8", boxShadow: "0 2px 5px rgba(0, 0, 0, 0.1)" }}>
         <Toolbar sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         
           <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
