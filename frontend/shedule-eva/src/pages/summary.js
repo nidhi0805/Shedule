@@ -2,48 +2,45 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Card, CardContent, Typography, List, ListItem, Divider, Box } from '@mui/material';
 import './SummaryPage.css';
-import { Note, AttachFile } from '@mui/icons-material'; // Import icons
+import { AttachFile } from '@mui/icons-material';
 
-const SummaryPage = () => { 
+const SummaryPage = () => {
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [completionStatus, setCompletionStatus] = useState(new Array(24).fill(0));
+  const [completionStatus, setCompletionStatus] = useState(null);
   const [userEmail, setUserEmail] = useState(null);
+
   const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
   const today = new Date();
   today.setHours(0, 0, 0, 0);
+
+  const formattedDate = `${today.getFullYear()}-${(today.getMonth() + 1).toString().padStart(2, '0')}-${today
+    .getDate()
+    .toString()
+    .padStart(2, '0')}`;
+
   useEffect(() => {
-
-
     const storedEmail = sessionStorage.getItem('userEmail');
     setUserEmail(storedEmail);
 
     if (storedEmail) {
-      fetchTasks(
-        storedEmail,
-        `${today.getFullYear()}-${(today.getMonth() + 1) < 10 ? '0' + (today.getMonth() + 1) : (today.getMonth() + 1)}-${today.getDate() < 10 ? '0' + today.getDate() : today.getDate()}`
-      );
-          }
-  }, []); 
+      fetchTasks(storedEmail, formattedDate);
+      fetchStatus(storedEmail, formattedDate);
+    }
+  }, []);
 
-  const fetchTasks = async (userEmail, date) => {
+  const fetchTasks = async (email, date) => {
     try {
       setLoading(true);
       setError('');
-     
-      const response = await axios.get(`${process.env.REACT_APP_API_URL}/get-user-activity/${userEmail}/${date}`);
+
+      const response = await axios.get(`${process.env.REACT_APP_API_URL}/get-user-activity/${email}/${date}`);
 
       if (response.data && response.data.activities) {
         const filteredTasks = response.data.activities.filter((task) => task !== null);
         setTasks(filteredTasks);
-
-        const newCompletionStatus = new Array(24).fill(0);
-        filteredTasks.forEach((task, index) => {
-          if (task.completed) newCompletionStatus[index] = 1;
-        });
-        setCompletionStatus(newCompletionStatus);
       } else {
         setTasks([]);
       }
@@ -56,32 +53,65 @@ const SummaryPage = () => {
     }
   };
 
-  const handleCheckboxChange = (index) => {
+  const fetchStatus = async (email, date) => {
+    try {
+      const response = await axios.get(`${process.env.REACT_APP_API_URL}/get-activity-status/${email}/${date}`);
+      if (response.data && response.data.status) {
+        setCompletionStatus(response.data.status);
+      } else {
+        setCompletionStatus(new Array(24).fill(0));
+      }
+    } catch (err) {
+      console.error('Error fetching status:', err);
+      setCompletionStatus(new Array(24).fill(0));
+    }
+  };
+
+  const handleCheckboxChange = async (index) => {
     if (completionStatus[index] === 1) return;
 
     const newCompletionStatus = [...completionStatus];
     newCompletionStatus[index] = 1;
     setCompletionStatus(newCompletionStatus);
+
+    try {
+      await axios.put(`${process.env.REACT_APP_API_URL}/update-activity-status`, {
+        email: userEmail,
+        date: formattedDate,
+        status: newCompletionStatus,
+      });
+      console.log('Status updated successfully');
+    } catch (err) {
+      console.error('Error updating status:', err);
+    }
   };
 
-  const remainingTasksCount = tasks.reduce(
-    (count, _, index) => (completionStatus[index] === 0 ? count + 1 : count),
-    0
-  );
+  const remainingTasksCount =
+    completionStatus && tasks
+      ? tasks.reduce(
+          (count, _, index) => (completionStatus[index] === 0 ? count + 1 : count),
+          0
+        )
+      : 0;
 
   return (
     <Box className="summary-container">
-     <Card className="sticky-note">
-  <AttachFile className="paperclip-icon" />
-  <CardContent>
-    <Typography className="summary-date">
-      {today.getDate()} {months[today.getMonth()]} {today.getFullYear()}
-    </Typography>
+      <Card className="sticky-note">
+        {/* Sticky Pin */}
+        <AttachFile className="paperclip-icon" />
+        <CardContent>
+          <Typography className="summary-date">
+            {today.getDate()} {months[today.getMonth()]} {today.getFullYear()}
+          </Typography>
 
+          {/* Loading */}
           {loading && <Typography className="summary-loading">Loading tasks...</Typography>}
+
+          {/* Error */}
           {!loading && error && <Typography className="summary-error">{error}</Typography>}
 
-          {!loading && !error && (
+          {/* Task Count */}
+          {!loading && !error && completionStatus !== null && (
             <Typography className="summary-task-count">
               {remainingTasksCount > 0
                 ? `${remainingTasksCount} task${remainingTasksCount > 1 ? 's' : ''} left`
@@ -91,20 +121,29 @@ const SummaryPage = () => {
 
           <Divider className="summary-divider" />
 
-          <List className="task-list">
-            {tasks.map((task, index) => (
-              <ListItem key={index} className={`summary-task ${completionStatus[index] ? 'completed' : ''}`}>
-                <input
-                  type="checkbox"
-                  className="task-checkbox"
-                  checked={completionStatus[index] === 1}
-                  disabled={completionStatus[index] === 1}
-                  onChange={() => handleCheckboxChange(index)}
-                />
-                {task}
-              </ListItem>
-            ))}
-          </List>
+          {/* Task List */}
+          {!loading &&
+            !error &&
+            tasks.length > 0 &&
+            completionStatus !== null && (
+              <List className="task-list">
+                {tasks.map((task, index) => (
+                  <ListItem
+                    key={index}
+                    className={`summary-task ${completionStatus[index] ? 'completed' : ''}`}
+                  >
+                    <input
+                      type="checkbox"
+                      className="task-checkbox"
+                      checked={completionStatus[index] === 1}
+                      disabled={completionStatus[index] === 1}
+                      onChange={() => handleCheckboxChange(index)}
+                    />
+                    {task}
+                  </ListItem>
+                ))}
+              </List>
+            )}
         </CardContent>
       </Card>
     </Box>
