@@ -19,7 +19,6 @@
     padding-top: 0; 
     object-fit: cover !important;
     height: 200 !important;
-    /* background-size: cover; */ 
   }
 
   .card-header {
