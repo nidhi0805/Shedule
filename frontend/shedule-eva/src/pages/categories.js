@@ -87,7 +87,7 @@ export default function Categories() {
   return (
     <div className="categories-container">
       <h1 className="categories-header">Categories</h1>
-      <p className="categories-subheader">Select up to 4 from the below options</p>
+      <p className="categories-subheader"> <em>Explore activities to enhance balance in your day</em></p>
       <div className="categories-grid">
         {categories.map((category) => (
           <div
