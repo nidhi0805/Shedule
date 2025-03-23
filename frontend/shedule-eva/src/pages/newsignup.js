@@ -7,6 +7,7 @@ import { toast, ToastContainer } from "react-toastify";
 
 const Signup = () => {
   const navigate = useNavigate();
+  const today = new Date().toISOString().split('T')[0];
 
   const [formData, setFormData] = useState({
     name: '',
@@ -89,7 +90,6 @@ const Signup = () => {
               alt="Logo"
             />
 
-         
             {formSubmitted && errors.length > 0 && (
               <Alert className="error-popup" severity="error">
                 {errors.map((error, index) => (
@@ -132,6 +132,7 @@ const Signup = () => {
                 InputLabelProps={{
                   shrink: true,
                 }}
+                inputProps= {{ max: today }}
                 className="text-field-height"
               />
             </Box>

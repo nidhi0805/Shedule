@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from '@mui/material';
 import { useNavigate, useParams } from 'react-router-dom';
+import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import TaskModal from './taskModal';
 import './day.css';
 
@@ -126,8 +127,23 @@ const Day = () => {
   return (
     <div className="schedule">
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
-        <h2 style={{ marginBottom: 20 }}>Schedule for {formattedDate}</h2>
-        <Button variant="outlined" color="success" onClick={handleDoneClick} disabled={Object.keys(tasks).length === 0}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: 20 }}>
+          <CalendarTodayIcon fontSize="medium" /> 
+          <span style={{ fontFamily: 'monospace', fontSize: '1.5rem' }}>{formattedDate}</span>
+        </div>
+        <Button 
+          variant="contained" 
+          color="success" 
+          onClick={handleDoneClick} 
+          disabled={Object.keys(tasks).length === 0}
+          style={{ 
+            backgroundColor: '#BA96C1', 
+            color: '#FBFCF8', 
+            fontWeight: 'bold' , 
+            border: '2px solid transparent', 
+            marginBottom: '20px'
+          }}
+        >
           Done
         </Button>
       </div>
