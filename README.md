@@ -1,14 +1,7 @@
-# Shedule
-
-# SHEHack-Team-1
-
-# Shedule
-
-## Project Name  
+# Project Name  
 SHEdule  
 
-## Team Number  
-Team 1
+## SHEHack - Team 1
 
 ## Team Members
 - Shivani Sharma
